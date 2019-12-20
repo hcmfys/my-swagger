@@ -5,6 +5,7 @@ import io.swagger.models.Operation;
 import io.swagger.models.Path;
 import io.swagger.models.Swagger;
 import io.swagger.models.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,6 +28,9 @@ import static springfox.documentation.swagger.common.HostNameProvider.components
 public class ApiDocController {
 
     private static DocumentationCache documentationCache = new DocumentationCache();
+
+    @Autowired
+    private HttpServletRequest request;
 
     @RequestMapping("/v2/api-docs3")
     @ResponseBody
