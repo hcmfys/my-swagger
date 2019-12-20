@@ -1,17 +1,18 @@
-package org.springbus;
+package org.springbus.test;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
 import org.reflections.Reflections;
-import org.reflections.scanners.*;
+import org.reflections.scanners.FieldAnnotationsScanner;
+import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Set;
 
 public class AppRun {
 

@@ -1,4 +1,4 @@
-package org.springbus;
+package org.springbus.mapper;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
