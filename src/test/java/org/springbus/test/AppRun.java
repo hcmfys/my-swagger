@@ -56,12 +56,11 @@ public class AppRun {
         long start = System.nanoTime();
         FastClass fastA = FastClass.create(A.class);
         for (int i = 0; i < 5; i++) {
+            fastA.invoke("setShao", new Class[]{Constants.TYPE_INTEGER.getClass()}, a, new Object[]{25} );
             Object o = fastA.invoke("getShao", Constants.EMPTY_CLASS_ARRAY, a, new Object[]{});
             System.out.println(o);
         }
         long end = System.nanoTime();
         System.out.println(end - start);
-
-
     }
 }

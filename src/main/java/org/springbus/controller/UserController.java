@@ -1,6 +1,5 @@
 package org.springbus.controller;
 
-import com.alibaba.fastjson.util.IOUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +15,7 @@ public class UserController {
 
 
     @Autowired
-    private HttpServletRequest request;
+    private   HttpServletRequest request;
 
     @RequestMapping(value="/",method = RequestMethod.POST)
     @ApiOperation(value = "文章（视频)home", httpMethod = "POST")
@@ -40,10 +39,27 @@ public class UserController {
     })
 
 
-    public boolean addArticle( ArticleBO article) {
+    public ArticleBO addArticle(@RequestBody @RequestParam( value = "article",required = false) ArticleBO article) {
 
         request.getParameterMap();
-        return true;
+        return article;
+    }
+
+
+
+    /**
+     * 新增文章（视频)
+     * @param article
+     * @return
+     */
+    @UrlMapping("/material/cms/test")
+    @RequestMapping(value = "/material/cms/test",method = RequestMethod.POST)
+
+
+    public void  test( ArticleBO article) {
+
+        request.getParameterMap();
+
     }
 
 }

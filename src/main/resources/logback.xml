@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<property name="log.directory" value="log/" />
+	<property name="log.charset" value="UTF-8" />
+	<property name="log.maxHistory" value="60" />
+	<property name="log.pattern" value="[%-5level] %date -- %thread -- [%logger]:%L -- traceId:[%X{trace_id}] -- userId:[%X{user_id}] -- %msg %n" />
+	<property name="log.async.queue.size" value="1024" />
+
+	<contextName>${log.context.name}</contextName>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder charset="${log.charset}">
+			<pattern>${log.pattern}</pattern>
+		</encoder>
+	</appender>
+	<appender name="FILE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.directory}log-info.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>${log.maxHistory}</maxHistory>
+		</rollingPolicy>
+
+		<encoder charset="${log.charset}">
+			<pattern>${log.pattern}</pattern>
+		</encoder>
+
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<!-- Asynchronized log, for FILE only -->
+	<appender name ="ASYNC_FILE" class= "ch.qos.logback.classic.AsyncAppender">
+		<!-- Don't discard log, logback will discard TRACE, DEBUG, INFO log when queue 80% capacity reached by default. -->
+		<discardingThreshold >0</discardingThreshold>
+		<queueSize>${log.async.queue.size}</queueSize>
+		<appender-ref ref = "FILE_INFO"/>
+	</appender>
+
+	<appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.directory}log-error.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>${log.maxHistory}</maxHistory>
+		</rollingPolicy>
+
+		<encoder charset="${log.charset}">
+			<pattern>${log.pattern}</pattern>
+		</encoder>
+
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<appender name="FILE_WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.directory}log-warn.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>${log.maxHistory}</maxHistory>
+		</rollingPolicy>
+
+		<encoder charset="${log.charset}">
+			<pattern>${log.pattern}</pattern>
+		</encoder>
+
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>WARN</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<root>
+		<level value="trace" />
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="ASYNC_FILE" />
+		<appender-ref ref="FILE_ERROR" />
+		<appender-ref ref="FILE_WARN" />
+	</root>
+</configuration>

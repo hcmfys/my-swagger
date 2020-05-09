@@ -35,7 +35,7 @@ class ProtocolAspect {
 
 
             System.out.println("-->"+ method.toString());
-            response.getWriter().write("ok");
+   // response.getWriter().write("ok");
             return;
 
 
