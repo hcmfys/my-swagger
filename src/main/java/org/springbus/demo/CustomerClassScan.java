@@ -1,7 +1,7 @@
 package org.springbus.demo;
 
 
-import org.aspectj.weaver.ast.Test;
+import org.jooq.meta.derby.sys.Sys;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -26,15 +26,16 @@ public class CustomerClassScan {
     //缓存MetadataReader工厂类
     MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
 
-    private final List<TypeFilter> includeFilters = new LinkedList<TypeFilter>();
-    private final List<TypeFilter> excludeFilters = new LinkedList<TypeFilter>();
+    private final List<TypeFilter> includeFilters = new LinkedList<>();
+    private final List<TypeFilter> excludeFilters = new LinkedList<>();
 
-    public void loadClass(){
+    public void loadClass(String basePackage){
         try{
+            String packageClass=basePackage.replace(".", "/");
             //增加过滤条件，提取出有Component注解类的资源
             this.includeFilters.add(new AnnotationTypeFilter(Component.class, true, true));
 
-            String pattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "com/cjm" + "/**/*.class";
+            String pattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + packageClass+ "/**/*.class";
             //查找到一批资源
             Resource[] resources = resourcePatternResolver.getResources(pattern);
             for(Resource resource : resources){
@@ -47,8 +48,15 @@ public class CustomerClassScan {
                         //从元数据中取得类名
                         String className = metadataReader.getAnnotationMetadata().getClassName();
                         //根据类名记载类
-                        Class<?> clazz = ClassUtils.forName(className, Test.class.getClassLoader());
-                        System.out.println(clazz.getName());
+                        ClassLoader classLoader=  Thread.currentThread().getContextClassLoader();
+
+                        boolean existis= ClassUtils.isPresent(className,classLoader);
+                        if(existis) {
+                            Class<?> clazz = ClassUtils.forName(className, classLoader);
+                            System.out.println(clazz.getName());
+                        }else{
+                            System.out.println(" ===> no find "+className);
+                        }
                     }
                 }
             }
