@@ -37,9 +37,11 @@ public class SpringAnTest {
         applicationContext.publishEvent(new HelloEvent(bydCar,"name"));
         System.out.println(bydCar);
         Person person = applicationContext.getBean(Person.class);
-
+        Student student = (Student) applicationContext.getBean("student");
         //applicationContext.refresh();
         System.out.println(person);
+        System.out.println(student);
+        student.display();
     }
 
 
