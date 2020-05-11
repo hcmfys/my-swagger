@@ -19,6 +19,7 @@ public class SpringAnTest {
         anReader.registerBean(Car.class, "byd");
         anReader.registerBean(Person.class, "saber");
 
+
         Car bydCar = (Car) beanFactory.getBean("byd");
         System.out.println(bydCar);
         Person person = (Person) beanFactory.getBean("saber");
@@ -33,6 +34,7 @@ public class SpringAnTest {
                 AnnotationConfigApplicationContext("org.springbus.demo");
         //applicationContext.refresh();
         Car bydCar =  applicationContext.getBean(Car.class);
+        applicationContext.publishEvent(new HelloEvent(bydCar,"name"));
         System.out.println(bydCar);
         Person person = applicationContext.getBean(Person.class);
 

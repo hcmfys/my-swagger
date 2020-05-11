@@ -1,0 +1,32 @@
+[INFO ] 2020-05-09 14:23:19,192 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>{GET /test1} 
+[INFO ] 2020-05-09 14:23:19,195 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>{GET /test2} 
+[INFO ] 2020-05-09 14:23:19,196 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>{GET /test3} 
+[INFO ] 2020-05-09 14:23:19,201 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>{POST /material/cms/test} 
+[INFO ] 2020-05-09 14:23:19,202 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>{POST /} 
+[INFO ] 2020-05-09 14:23:19,202 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>{POST /material/cms/addArticle} 
+[INFO ] 2020-05-09 14:23:19,208 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:19,208 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:19,208 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:19,208 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:19,209 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>{GET /v2/api-docs-ext, produces [application/json || application/hal+json]} 
+[INFO ] 2020-05-09 14:23:19,210 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:19,210 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:19,210 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:19,210 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:19,210 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:48,237 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>{GET /test1} 
+[INFO ] 2020-05-09 14:23:48,245 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>{GET /test2} 
+[INFO ] 2020-05-09 14:23:48,246 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>{GET /test3} 
+[INFO ] 2020-05-09 14:23:48,253 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>{POST /material/cms/test} 
+[INFO ] 2020-05-09 14:23:48,253 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>{POST /} 
+[INFO ] 2020-05-09 14:23:48,254 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>{POST /material/cms/addArticle} 
+[INFO ] 2020-05-09 14:23:48,263 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:48,264 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:48,264 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:48,264 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:48,264 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:48,265 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:48,265 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:48,266 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>{GET /v2/api-docs-ext, produces [application/json || application/hal+json]} 
+[INFO ] 2020-05-09 14:23:48,266 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
+[INFO ] 2020-05-09 14:23:48,267 -- main -- [org.springbus.aspet.MyCustomerRequestMapping]:216 -- traceId:[] -- userId:[] -- =======getMappingForMethod ======>null 
