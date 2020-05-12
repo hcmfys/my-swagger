@@ -1,10 +1,7 @@
 package org.springbus.demo;
 
-import lombok.Synchronized;
-import org.jooq.meta.derby.sys.Sys;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import java.io.IOException;
 
