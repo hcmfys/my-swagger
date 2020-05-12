@@ -1,10 +1,12 @@
 package org.springbus.demo;
 
+import com.sun.org.apache.bcel.internal.generic.StackConsumer;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -29,19 +31,33 @@ public class SpringAnTest {
 
 
 
-    private   static  void test2(){
-        AnnotationConfigApplicationContext applicationContext=new
-                AnnotationConfigApplicationContext("org.springbus.demo");
-        //applicationContext.refresh();
-        Car bydCar =  applicationContext.getBean(Car.class);
-        applicationContext.publishEvent(new HelloEvent(bydCar,"name"));
+    private   static  void test2() {
+        AnnotationConfigApplicationContext applicationContext = new
+                AnnotationConfigApplicationContext();
+        applicationContext.setEnvironment(new StandardEnvironment());
+        applicationContext.scan("org.springbus.demo");
+        applicationContext.refresh();
+
+        Car bydCar = applicationContext.getBean(Car.class);
+        applicationContext.publishEvent(new HelloEvent(bydCar, "name"));
         System.out.println(bydCar);
         Person person = applicationContext.getBean(Person.class);
         Student student = (Student) applicationContext.getBean("student");
-        //applicationContext.refresh();
+
         System.out.println(person);
         System.out.println(student);
+        String h = applicationContext.getEnvironment().getProperty("d");
         student.display();
+        System.out.println("h=" + h);
+
+        String g = applicationContext.getEnvironment().getProperty("g");
+
+        System.out.println("g=" + g);
+
+        String c = applicationContext.getEnvironment().getProperty("c");
+
+        System.out.println("c=" +c);
+
     }
 
 
