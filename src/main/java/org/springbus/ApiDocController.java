@@ -6,6 +6,7 @@ import io.swagger.models.Path;
 import io.swagger.models.Swagger;
 import io.swagger.models.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,73 +26,64 @@ import java.util.Map;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static springfox.documentation.swagger.common.HostNameProvider.componentsFrom;
 
+@Controller
 public class ApiDocController {
 
-    private static DocumentationCache documentationCache = new DocumentationCache();
+  @Autowired private HttpServletRequest request;
+  @Autowired private DocumentationCache documentationCache;
+  @Autowired private ServiceModelToSwagger2Mapper mapper;
 
-    @Autowired
-    private HttpServletRequest request;
+  @RequestMapping("/v2/api-docs3")
+  @ResponseBody
+  public Swagger doc(HttpServletRequest servletRequest, HttpServletResponse httpServletResponse) {
 
-    @RequestMapping("/v2/api-docs3")
-    @ResponseBody
-    public Swagger doc(DocumentationCache documentationCache, ServiceModelToSwagger2Mapper mapper,
-                       HttpServletRequest servletRequest, HttpServletResponse httpServletResponse) {
+    String groupName = Docket.DEFAULT_GROUP_NAME;
 
+    Swagger swagger = null;
 
-        String groupName = Docket.DEFAULT_GROUP_NAME;
+    Documentation documentation = documentationCache.documentationByGroup(groupName);
+    if (documentation == null) {
 
-        Swagger swagger = null;
-
-        Documentation documentation = documentationCache.documentationByGroup(groupName);
-        if (documentation == null) {
-
-        } else {
-            swagger = mapper.mapDocumentation(documentation);
-            UriComponents uriComponents = componentsFrom(servletRequest, swagger.getBasePath());
-            swagger.basePath(Strings.isNullOrEmpty(uriComponents.getPath()) ? "/" : uriComponents.getPath());
-            if (isNullOrEmpty(swagger.getHost())) {
-                swagger.host(hostName(uriComponents));
+    } else {
+      swagger = mapper.mapDocumentation(documentation);
+      UriComponents uriComponents = componentsFrom(servletRequest, swagger.getBasePath());
+      swagger.basePath(
+          Strings.isNullOrEmpty(uriComponents.getPath()) ? "/" : uriComponents.getPath());
+      if (isNullOrEmpty(swagger.getHost())) {
+        swagger.host(hostName(uriComponents));
+      }
+      List<Tag> tags = swagger.getTags();
+      if (tags != null) {
+        for (Tag t : tags) {}
+      }
+      Map<String, Path> pathMap = swagger.getPaths();
+      if (pathMap != null) {
+        Iterator<Path> pathIterator = pathMap.values().iterator();
+        while (pathIterator.hasNext()) {
+          Path p = pathIterator.next();
+          Operation operation = p.getPost();
+          if (operation != null) {
+            List<String> operationTags = operation.getTags();
+            List<String> newTagList = new ArrayList<>();
+            if (!StringUtils.isEmpty(operationTags)) {
+              for (String name : operationTags) {}
             }
-            List<Tag> tags = swagger.getTags();
-            if (tags != null) {
-                for (Tag t : tags) {
-
-                }
-            }
-            Map<String, Path> pathMap = swagger.getPaths();
-            if (pathMap != null) {
-                Iterator<Path> pathIterator = pathMap.values().iterator();
-                while (pathIterator.hasNext()) {
-                    Path p = pathIterator.next();
-                    Operation operation = p.getPost();
-                    if (operation != null) {
-                        List<String> operationTags = operation.getTags();
-                        List<String> newTagList = new ArrayList<>();
-                        if (!StringUtils.isEmpty(operationTags)) {
-                            for (String name : operationTags) {
-
-                            }
-                        }
-                        operation.setTags(newTagList);
-                    }
-                }
-            }
-
-
+            operation.setTags(newTagList);
+          }
         }
-        return swagger;
+      }
     }
+    return swagger;
+  }
 
-    private static String hostName(UriComponents uriComponents) {
+  private static String hostName(UriComponents uriComponents) {
 
-        String host = uriComponents.getHost();
-        int port = uriComponents.getPort();
-        if (port > -1) {
-            return String.format("%s:%d", host, port);
-        }
-        return host;
-
+    String host = uriComponents.getHost();
+    int port = uriComponents.getPort();
+    if (port > -1) {
+      return String.format("%s:%d", host, port);
     }
-
+    return host;
+  }
 }
 
