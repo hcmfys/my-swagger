@@ -1,12 +1,29 @@
 package org.springbus.aspet;
 
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
+import org.springbus.convert.DefaultReturnValueResolver;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
-@Component
-@Order(Ordered.HIGHEST_PRECEDENCE+101)
+import java.util.ArrayList;
+import java.util.List;
+
+//@Component
+//@Order(Ordered.LOWEST_PRECEDENCE)
 public class MyRequestMappingHandlerAdapter  extends RequestMappingHandlerAdapter {
+
+    public MyRequestMappingHandlerAdapter() {
+        super();
+
+    }
+
+
+    @Override
+    public void afterPropertiesSet() {
+        super.afterPropertiesSet();
+
+        List<HandlerMethodReturnValueHandler> handlers = new ArrayList<>();
+        handlers.add(new DefaultReturnValueResolver());
+        setReturnValueHandlers(handlers);
+    }
 
 }

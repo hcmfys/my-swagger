@@ -138,6 +138,7 @@
             <scope>compile</scope>
         </dependency>
 
+
     </dependencies>
 
     <!-- Package as an executable jar -->

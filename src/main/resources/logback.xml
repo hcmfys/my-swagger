@@ -73,7 +73,7 @@
 	</appender>
 
 	<root>
-		<level value="trace" />
+		<level value="info" />
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="ASYNC_FILE" />
 		<appender-ref ref="FILE_ERROR" />

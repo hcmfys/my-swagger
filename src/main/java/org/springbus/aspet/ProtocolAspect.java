@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 @Order(1)
 @Aspect
 @Component
-class ProtocolAspect {
+public class ProtocolAspect {
 
 
     @Before("target(org.springbus.controller.UserController) && @annotation(org.springframework.web.bind.annotation.RequestMapping)")
