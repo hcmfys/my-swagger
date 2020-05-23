@@ -13,7 +13,7 @@ public class App {
 
        String[] names=context.getBeanDefinitionNames();
        for(String name :names) {
-           System.out.println(" bean name-------------->" + name);
+           //System.out.println(" bean name-------------->" + name);
        }
     }
 }
