@@ -135,10 +135,15 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-logging</artifactId>
-            <scope>compile</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.github.shyiko/mysql-binlog-connector-java -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
+
+    <!-- https://mvnrepository.com/artifact/com.github.shyiko/mysql-binlog-connector-java -->
         <dependency>
             <groupId>com.github.shyiko</groupId>
             <artifactId>mysql-binlog-connector-java</artifactId>
