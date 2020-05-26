@@ -1,53 +1,48 @@
 package org.springbus.zk;
 
+import lombok.SneakyThrows;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.api.CuratorEvent;
-import org.apache.curator.framework.api.CuratorListener;
 import org.apache.curator.framework.recipes.cache.*;
 import org.apache.curator.retry.ExponentialBackoffRetry;
-
-import static org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type.NODE_ADDED;
 
 public class ZkConnect {
 
     private static CuratorFramework client;
 
     public static CuratorFramework getClient() {
-        client = CuratorFrameworkFactory.newClient("127.0.0.1:2181",
+        client = CuratorFrameworkFactory.newClient("10.100.163.72:2181",
                 new ExponentialBackoffRetry(1000, 3));
         client.start();
         return client;
     }
 
-    public  static  void watchPath(CuratorFramework client,String path) throws Exception {
+    public  static  void watchTreePath(CuratorFramework client,String path) throws Exception {
         TreeCache treeCache=new TreeCache(client,path);
-        treeCache.getListenable().addListener(new TreeCacheListener() {
-            @Override
-            public void childEvent(CuratorFramework curatorFramework, TreeCacheEvent event) throws Exception {
-                ChildData data = event.getData();
-                if(data !=null){
-                    switch (event.getType()) {
-                        case NODE_ADDED:
-                            System.out.println("NODE_ADDED : "+ data.getPath() +"  数据:"+getString(data.getData()));
-                            break;
-                        case NODE_REMOVED:
-                            System.out.println("NODE_REMOVED : "+ data.getPath() +"  数据:"+ getString(data.getData()));
-                            break;
-                        case NODE_UPDATED:
-                            System.out.println("NODE_UPDATED : "+ data.getPath() +"  数据:"+ getString(data.getData()));
-                            break;
+        treeCache.getListenable().addListener((curatorFramework, event) -> {
+            ChildData data = event.getData();
+            if(data !=null){
+                switch (event.getType()) {
+                    case NODE_ADDED:
+                        System.out.println("NODE_ADDED : "+ data.getPath() +"  数据:"+getString(data.getData()));
+                        break;
+                    case NODE_REMOVED:
+                        System.out.println("NODE_REMOVED : "+ data.getPath() +"  数据:"+ getString(data.getData()));
+                        break;
+                    case NODE_UPDATED:
+                        System.out.println("NODE_UPDATED : "+ data.getPath() +"  数据:"+ getString(data.getData()));
+                        break;
 
-                        default:
-                            break;
-                    }
-                }else{
-                    System.out.println( "data is null : "+ event.getType());
+                    default:
+                        break;
                 }
-
+            }else{
+                System.out.println( "data is null : "+ event.getType());
             }
+
         });
-        treeCache.start();
+         treeCache.start();
+
     }
 
     private static   String getString(byte[] bytes){
@@ -69,38 +64,62 @@ public class ZkConnect {
      * @throws Exception
      */
     public  static  void watchPathChildrenCache(CuratorFramework client,String path) throws Exception {
-        PathChildrenCache treeCache=new PathChildrenCache(client,path,true);
-        treeCache.getListenable() .addListener(new PathChildrenCacheListener() {
-            @Override
-            public void childEvent(CuratorFramework curatorFramework, PathChildrenCacheEvent pathChildrenCacheEvent) throws Exception {
-                System.out.println("type()="+pathChildrenCacheEvent.getType());
-                ;
-                System.out.println(pathChildrenCacheEvent.toString() );
+        PathChildrenCache treeCache=new PathChildrenCache(client,path,false);
+        treeCache.start();
+        treeCache.getListenable() .addListener((curatorFramework, pathChildrenCacheEvent) -> {
+
+            ChildData data = pathChildrenCacheEvent.getData();
+
+            switch (pathChildrenCacheEvent.getType()) {
+                case CHILD_ADDED:
+                    System.out.println("CHILD_ADDED : " + data.getPath() + "  数据:" + getString(data.getData()));
+                    break;
+                case CHILD_REMOVED:
+                    System.out.println("CHILD_REMOVED : " + data.getPath() + "  数据:" + getString(data.getData()));
+                    break;
+                case CHILD_UPDATED:
+                    System.out.println("CHILD_UPDATED : " + data.getPath() + "  数据:" + getString(data.getData()));
+                    break;
+
+                default:
+                    break;
             }
         });
         System.out.println("Register zk watcher successfully!");
 
-        treeCache.start();
+
     }
 
 
 
     public  static  void testCreate(String p) throws Exception {
-        CuratorFramework client= getClient();
+        new Thread(new Runnable(){
 
-        if( client.checkExists().forPath(p) ==null) {
-            String path = client.create().creatingParentsIfNeeded().forPath(p);
-            System.out.println("create path=" + path);
-        }else{
-            System.out.println("exists   path="+  p );
-        }
-        watchPath(client, p);
+
+            @Override
+            public void run() {
+                try {
+                    CuratorFramework client = getClient();
+
+                    if (client.checkExists().forPath(p) == null) {
+                        String path = client.create().creatingParentsIfNeeded().forPath(p);
+                        System.out.println("create path=" + path);
+                    } else {
+                        System.out.println("exists   path=" + p);
+                    }
+                    watchPathChildrenCache(client, p);
+                }catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
 
     public static void main(String[] args) throws Exception {
-        testCreate("/");
-        Thread.sleep(Long.MAX_VALUE );
+         testCreate("/dubbo");
+
     }
 
 
