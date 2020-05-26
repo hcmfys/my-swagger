@@ -11,9 +11,15 @@ import java.io.IOException;
 
 public class Application {
 
-    public static void main(String[] args) throws IOException {
-        BinaryLogClient binaryLogClient=new BinaryLogClient("localhost",3306,"maxwell","root");
 
+    private static void netLink() throws IOException {
+        BinaryLogClient binaryLogClient=new BinaryLogClient("localhost",3306,"maxwell","root");
+        EventDeserializer eventDeserializer = new EventDeserializer();
+        eventDeserializer.setCompatibilityMode(
+                EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG,
+                EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG
+        );
+        // binaryLogClient.setEventDeserializer(eventDeserializer);
         binaryLogClient.registerEventListener(new BinaryLogClient.EventListener() {
             @Override
             public void onEvent(Event event) {
@@ -23,14 +29,20 @@ public class Application {
         binaryLogClient.connect();
     }
 
+    public static void main(String[] args) throws IOException {
+        //fileLink();
+        netLink();
+    }
+
     private static void PP(Event event) {
         EventData data = event.getData();
         if (data instanceof QueryEventData) {
             QueryEventData d = (QueryEventData) data;
             System.out.println("数据库DDL操作select=" + d.getSql());
         } else if (data instanceof TableMapEventData) {
+
             TableMapEventData d = (TableMapEventData) data;
-            System.out.println("数据库DDL操作=" + d.getTable());
+            System.out.println("数据库DDL操作=" + d.toString());
         } else if (data instanceof UpdateRowsEventData) {
             UpdateRowsEventData d = (UpdateRowsEventData) data;
 
@@ -47,7 +59,7 @@ public class Application {
 
 
 
-    public static void main2(String[] args) throws IOException {
+    public static void fileLink() throws IOException {
 
         File file = new File("D:\\phpStudy\\PHPTutorial\\MySQL\\data\\bin-log.000003");
         EventDeserializer eventDeserializer = new EventDeserializer();
@@ -55,7 +67,8 @@ public class Application {
                 EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG,
                 EventDeserializer.CompatibilityMode.CHAR_AND_BINARY_AS_BYTE_ARRAY
         );
-        BinaryLogFileReader reader = new BinaryLogFileReader(file, eventDeserializer);
+        BinaryLogFileReader reader = new BinaryLogFileReader(file);
+
         try {
             for (Event event; (event = reader.readEvent()) != null; ) {
                 EventData data = event.getData();
