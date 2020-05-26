@@ -1,0 +1,107 @@
+package org.springbus.zk;
+
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.api.CuratorEvent;
+import org.apache.curator.framework.api.CuratorListener;
+import org.apache.curator.framework.recipes.cache.*;
+import org.apache.curator.retry.ExponentialBackoffRetry;
+
+import static org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type.NODE_ADDED;
+
+public class ZkConnect {
+
+    private static CuratorFramework client;
+
+    public static CuratorFramework getClient() {
+        client = CuratorFrameworkFactory.newClient("127.0.0.1:2181",
+                new ExponentialBackoffRetry(1000, 3));
+        client.start();
+        return client;
+    }
+
+    public  static  void watchPath(CuratorFramework client,String path) throws Exception {
+        TreeCache treeCache=new TreeCache(client,path);
+        treeCache.getListenable().addListener(new TreeCacheListener() {
+            @Override
+            public void childEvent(CuratorFramework curatorFramework, TreeCacheEvent event) throws Exception {
+                ChildData data = event.getData();
+                if(data !=null){
+                    switch (event.getType()) {
+                        case NODE_ADDED:
+                            System.out.println("NODE_ADDED : "+ data.getPath() +"  数据:"+getString(data.getData()));
+                            break;
+                        case NODE_REMOVED:
+                            System.out.println("NODE_REMOVED : "+ data.getPath() +"  数据:"+ getString(data.getData()));
+                            break;
+                        case NODE_UPDATED:
+                            System.out.println("NODE_UPDATED : "+ data.getPath() +"  数据:"+ getString(data.getData()));
+                            break;
+
+                        default:
+                            break;
+                    }
+                }else{
+                    System.out.println( "data is null : "+ event.getType());
+                }
+
+            }
+        });
+        treeCache.start();
+    }
+
+    private static   String getString(byte[] bytes){
+        if(bytes!=null){
+            return  new String(bytes);
+        }return "";
+    }
+
+    /**
+     *Cache 的三种实现 实践
+     * Path Cache：监视一个路径下1）孩子结点的创建、2）删除，3）以及结点数据的更新。
+     * 产生的事件会传递给注册的PathChildrenCacheListener。
+     * Node Cache：监视一个结点的创建、更新、删除，并将结点的数据缓存在本地。
+     * Tree Cache：Path Cache和Node Cache的“合体”，监视路径下的创建、更新、删除事件，并缓存路径下所有孩子结点的数据。
+     *
+
+     * @param client
+     * @param path
+     * @throws Exception
+     */
+    public  static  void watchPathChildrenCache(CuratorFramework client,String path) throws Exception {
+        PathChildrenCache treeCache=new PathChildrenCache(client,path,true);
+        treeCache.getListenable() .addListener(new PathChildrenCacheListener() {
+            @Override
+            public void childEvent(CuratorFramework curatorFramework, PathChildrenCacheEvent pathChildrenCacheEvent) throws Exception {
+                System.out.println("type()="+pathChildrenCacheEvent.getType());
+                ;
+                System.out.println(pathChildrenCacheEvent.toString() );
+            }
+        });
+        System.out.println("Register zk watcher successfully!");
+
+        treeCache.start();
+    }
+
+
+
+    public  static  void testCreate(String p) throws Exception {
+        CuratorFramework client= getClient();
+
+        if( client.checkExists().forPath(p) ==null) {
+            String path = client.create().creatingParentsIfNeeded().forPath(p);
+            System.out.println("create path=" + path);
+        }else{
+            System.out.println("exists   path="+  p );
+        }
+        watchPath(client, p);
+    }
+
+
+    public static void main(String[] args) throws Exception {
+        testCreate("/");
+        Thread.sleep(Long.MAX_VALUE );
+    }
+
+
+}
