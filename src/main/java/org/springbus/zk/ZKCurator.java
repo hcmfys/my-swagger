@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 public class ZKCurator {
 
  private static final String ADDR = "10.100.163.72:2181";
- private static final String PATH = "/dubbo";
+ private static final String PATH = "/test";
 
  public static void main(String[] args) throws InterruptedException {
   final CuratorFramework zkClient = CuratorFrameworkFactory.newClient(ADDR,
@@ -20,7 +20,7 @@ public class ZKCurator {
   zkClient.start();
   System.out.println("start zkclient...");
   try {
-   registerWatcher(zkClient);
+   registTreeCache(zkClient);
    //registerNodeCache(zkClient);
   } catch (Exception e) {
    e.printStackTrace();
@@ -65,7 +65,7 @@ public class ZKCurator {
      /*NORMAL只和POST_INITIALIZED_EVENT的1情况一样，不会ALIZED类型事件触发
 
      /*BUILD_INITIAL_CACHE 不会触发上面两者事件,同步初始化客户端的cache，及创建cache后，就从服务器端拉入对应的数据      */
-  watcher.start(PathChildrenCache.StartMode.BUILD_INITIAL_CACHE);
+  watcher.start(PathChildrenCache.StartMode.POST_INITIALIZED_EVENT);
   System.out.println("注册watcher成功...");
  }
 

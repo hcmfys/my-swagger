@@ -118,7 +118,7 @@ public class ZkConnect {
 
 
     public static void main(String[] args) throws Exception {
-         testCreate("/dubbo");
+         testCreate("/test/123/233/fdfd");
 
     }
 
