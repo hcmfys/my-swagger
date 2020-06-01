@@ -1,11 +1,16 @@
 package org.springbus.zk;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.cache.*;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.kafka.common.protocol.types.Field;
 
+import java.net.URLDecoder;
+import java.util.List;
+@Slf4j
 public class ZkConnect {
 
     private static CuratorFramework client;
@@ -89,17 +94,31 @@ public class ZkConnect {
 
 
     }
+private static void getDirList(CuratorFramework client,String path) throws Exception {
+        long t1=System.currentTimeMillis();
+    System.out.println("path---->"+ URLDecoder.decode( path,"utf-8"));
+      List<String> dirList=  client.getChildren().forPath(path);
+      for(String dir : dirList) {
+          getDirList(client, path+"/"+dir);
+      }
+    long t2=System.currentTimeMillis();
+      log.info("cost time ="+ (t2-t1));
+}
 
-
+    public  static  void testListPath(String p) throws Exception {
+        CuratorFramework client = getClient();
+        getDirList(client, p);
+    }
 
     public  static  void testCreate(String p) throws Exception {
+        CuratorFramework client = getClient();
         new Thread(new Runnable(){
 
 
             @Override
             public void run() {
                 try {
-                    CuratorFramework client = getClient();
+
 
                     if (client.checkExists().forPath(p) == null) {
                         String path = client.create().creatingParentsIfNeeded().forPath(p);
@@ -118,7 +137,10 @@ public class ZkConnect {
 
 
     public static void main(String[] args) throws Exception {
-         testCreate("/test/123/233/fdfd");
+        long t1=System.currentTimeMillis();
+        testListPath("/dubbo");
+        long t2=System.currentTimeMillis();
+        System.out.println(" all cost times ="+(t2-t1) /1000);
 
     }
 

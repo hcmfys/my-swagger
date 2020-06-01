@@ -5,13 +5,10 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.cache.*;
 import org.apache.curator.retry.RetryNTimes;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 public class ZKCurator {
 
- private static final String ADDR = "10.100.163.72:2181";
- private static final String PATH = "/test";
+ private static final String ADDR = "127.0.0.1:2181";
+ private static final String PATH = "/dubbo";
 
  public static void main(String[] args) throws InterruptedException {
   final CuratorFramework zkClient = CuratorFrameworkFactory.newClient(ADDR,
@@ -20,12 +17,12 @@ public class ZKCurator {
   zkClient.start();
   System.out.println("start zkclient...");
   try {
-   registTreeCache(zkClient);
+   registerTreeCache(zkClient);
    //registerNodeCache(zkClient);
   } catch (Exception e) {
    e.printStackTrace();
   }
-  System.out.println("register wathcer end...");
+  System.out.println("register watcher end...");
   Thread.sleep(Integer.MAX_VALUE);
   zkClient.close();
  }
@@ -49,7 +46,7 @@ public class ZKCurator {
    *
    * 重启时，与zk连接失败
    */
-  ExecutorService service = Executors.newFixedThreadPool(3);
+
   PathChildrenCache watcher = new PathChildrenCache(zkClient, PATH, true/*,false, service*/);
   watcher.getListenable().addListener(new PathChildrenCacheListener() {
    public void childEvent(CuratorFramework curatorFramework, PathChildrenCacheEvent pathChildrenCacheEvent) throws Exception {
@@ -91,7 +88,7 @@ public class ZKCurator {
   nodeCache.start(true);
  }
 
- public static void registTreeCache(CuratorFramework client) throws Exception {
+ public static void registerTreeCache(CuratorFramework client) throws Exception {
   /**
    * TreeCache.nodeState == LIVE的时候，才能执行getCurrentChildren非空,默认为PENDING
    * 初始化完成之后，监听节点操作时 TreeCache.nodeState == LIVE
