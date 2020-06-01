@@ -1,7 +1,7 @@
 package org.springbus.test;
 
 import org.jooq.meta.derby.sys.Sys;
-import org.junit.Test;
+
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -47,7 +47,7 @@ public class AppRun {
         return reflections;
     }
 
-    @Test
+
     public void testFastClass() throws Exception {
         A a = new A();
         a.setDa("duo");
