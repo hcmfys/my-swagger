@@ -14,9 +14,9 @@ public class StringMessageDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         int size = in.readableBytes();
-        if (size >= 3) {
-            ByteBuf bb = in.readBytes(3);
-            byte[] bytes = new byte[3];
+        if (size >= 6) {
+            ByteBuf bb = in.readBytes(6);
+            byte[] bytes = new byte[6];
             bb.getBytes(0, bytes);
             String data = new String(bytes);
             out.add(data);
