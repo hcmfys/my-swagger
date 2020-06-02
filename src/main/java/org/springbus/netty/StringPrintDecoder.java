@@ -12,6 +12,7 @@ public class StringPrintDecoder  extends MessageToMessageDecoder<String> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
-        System.out.println("==StirngPrintEncoder="+msg);
+        System.out.println("==StirngPrintEncoder="+msg.replace("\r",
+                "\\r").replace("\n", "\\n").replace(" ", "\\e"));
     }
 }
