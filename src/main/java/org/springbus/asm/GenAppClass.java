@@ -85,7 +85,7 @@ public class GenAppClass {
     }
 
 
-    static void writeClass() {
+    static void writeClass(String toPath) {
 
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         cw.visit(V1_6, ACC_PUBLIC, "org/springbus/asm/GenClass", null, "java/lang/Object", null);
@@ -95,7 +95,7 @@ public class GenAppClass {
         cw.visitEnd();
         byte[] b = cw.toByteArray();
         try {
-            FileCopyUtils.copy(b, new File("E:\\123\\org\\springbus\\asm\\GenClass.class"));
+            FileCopyUtils.copy(b, new File(toPath));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,6 +105,6 @@ public class GenAppClass {
 
     public static void main(String[] args) {
 
-        writeClass();
+        writeClass("E:\\123\\org\\springbus\\asm\\GenClass.class");
     }
 }
