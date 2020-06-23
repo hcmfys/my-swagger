@@ -49,10 +49,15 @@ public class GenEmptyClass {
             mv.visitMethodInsn(INVOKESPECIAL, "org/springbus/asm/EmptyClass", "suc", "()I",false);
             mv.visitIntInsn(ILOAD, 1);
             mv.visitInsn(IADD);
+
+
+            mv.visitFieldInsn(GETSTATIC,  Type.getInternalName(System.class), "out", Type.getDescriptor(System.out.getClass()));
+            mv.visitLdcInsn("===java home ===");
+            mv.visitMethodInsn(INVOKEVIRTUAL, Type.getInternalName(System.out.getClass()), "println", "(Ljava/lang/String;)V",false);
             mv.visitInsn(IRETURN);
             Label l2 = new Label();
             mv.visitLabel(l2);
-           // mv.visitLocalVariable("this", "Lorg/springbus/asm/EmptyClass;", null, l1, l2, 0);
+            mv.visitLocalVariable("this", "Lorg/springbus/asm/EmptyClass;", null, l1, l2, 0);
             mv.visitLocalVariable("a", "I", null, l1, l2, 1);
 
             mv.visitMaxs(0, 2);
@@ -198,4 +203,5 @@ public class GenEmptyClass {
         genEmptyClass("E:\\123\\org\\springbus\\asm\\EmptyClass.class");
 
     }
+
 }
