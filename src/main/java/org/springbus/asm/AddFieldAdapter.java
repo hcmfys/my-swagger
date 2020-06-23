@@ -28,6 +28,7 @@ public class AddFieldAdapter extends ClassVisitor {
             isFieldPresent = true;
         }
         return cv.visitField(access, name, desc, signature, value);
+
     }
 
     @Override
