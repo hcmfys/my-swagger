@@ -12,13 +12,15 @@ import java.lang.reflect.Method;
 public class CostTime {
 
     public static void main(String[] args) {
-        redefinePersonClass();
+        String className = "org.springbus.asm.Calc";
+        String path="E:\\123\\org\\springbus\\asm\\Calc.class";
+        redefinePersonClass(className,path);
     }
 
-    private static void redefinePersonClass() {
-        String className = "org.springbus.asm.Calc";
+    private static void redefinePersonClass(String className,String path) {
+
         try {
-            String path="E:\\123\\org\\springbus\\asm\\Calc.class";
+
 
             ClassReader reader = new ClassReader("org.springbus.asm.Calc");                               // 1. 创建 ClassReader 读入 .class 文件到内存中
             ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);                 // 2. 创建 ClassWriter 对象，将操作之后的字节码的字节数组回写
