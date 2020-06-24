@@ -7,14 +7,11 @@ public class Calc {
         return (a + b);
     }
 
-    public static void main(String[] args) {
-        int t=new Calc().add(4, 6);
-        System.out.println(t);
-    }
 
 
 
-    private  int cal( ) {
+
+    public   int cal( ) {
         int a = 100;
         int b = 200;
         int c = 300;
