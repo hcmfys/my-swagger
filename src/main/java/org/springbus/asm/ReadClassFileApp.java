@@ -53,7 +53,7 @@ public class ReadClassFileApp {
             ClassReader reader = new ClassReader(Type.getInternalName(String.class));
           //  ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
             reader.accept(new PrintVistor(ASM6), 0);
-            reader.accept(new TraceClassVisitor( null,new PrintWriter(System.out)), 0);
+            reader.accept(new TraceClassVisitor( new PrintWriter(System.out)), 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
