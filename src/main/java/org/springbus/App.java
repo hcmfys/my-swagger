@@ -9,11 +9,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class App {
 
    public  static  void main(String[] args) {
-       ConfigurableApplicationContext context= SpringApplication.run(App.class,args);
+      SpringApplication.run(App.class,args);
 
-       String[] names=context.getBeanDefinitionNames();
-       for(String name :names) {
-           //System.out.println(" bean name-------------->" + name);
-       }
+
     }
 }

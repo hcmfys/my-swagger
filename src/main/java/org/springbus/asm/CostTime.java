@@ -3,26 +3,30 @@ package org.springbus.asm;
 import org.objectweb.asm.*;
 import org.objectweb.asm.commons.AdviceAdapter;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 
 public class CostTime {
 
-    public static void main(String[] args) {
-        String className = "org.springbus.asm.Calc";
-        String path="E:\\123\\org\\springbus\\asm\\Calc.class";
-        redefinePersonClass(className,path);
+    public static void main(String[] args) throws Exception {
+        String className = "org.springbus.asm.GenClass";
+        String path = "E:\\123\\org\\springbus\\asm\\GenClass.class";
+        Class o = redefinePersonClass(className, path);
+        Object obj = o.newInstance();
+        Method m = o.getDeclaredMethod("add", int.class, int.class);
+        m.setAccessible(true);
+        Object c = m.invoke(obj, 1, 2);
+        System.out.println(c);
+
     }
 
-    private static void redefinePersonClass(String className,String path) {
+    private static Class redefinePersonClass(String className,String path) {
 
         try {
 
 
-            ClassReader reader = new ClassReader("org.springbus.asm.Calc");                               // 1. 创建 ClassReader 读入 .class 文件到内存中
+            ClassReader reader = new ClassReader(className);                               // 1. 创建 ClassReader 读入 .class 文件到内存中
             ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);                 // 2. 创建 ClassWriter 对象，将操作之后的字节码的字节数组回写
             ClassVisitor change = new ChangeVisitor(writer);                                        // 3. 创建自定义的 ClassVisitor 对象
             reader.accept(change, ClassReader.EXPAND_FRAMES);
@@ -38,15 +42,15 @@ public class CostTime {
             }// 4. 将 ClassVisitor 对象传入 ClassReader 中
 
             Class clazz = new CustomerClassLoader().defineClass(className, writer.toByteArray());
-            Object personObj = clazz.newInstance();
-            Method nameMethod = clazz.getDeclaredMethod("cal", null);
-            nameMethod.setAccessible(true);
-            nameMethod.invoke(personObj, null);
-            System.out.println("Success!");
 
+
+
+            System.out.println("Success!");
+            return clazz;
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Failure!");
+            return  null;
         }
     }
 

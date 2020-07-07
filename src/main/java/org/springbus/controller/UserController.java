@@ -5,61 +5,40 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springbus.mapper.UrlMapping;
 import org.springbus.model.ArticleBO;
+import org.springbus.model.ArticleBO_VV;
+import org.springbus.model.ArticlePo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
+import java.util.List;
 
 @RestController
 public class UserController {
 
-
-    @Autowired
-    private   HttpServletRequest request;
-
-    @RequestMapping(value="/",method = RequestMethod.POST)
-    @ApiOperation(value = "文章（视频)home", httpMethod = "POST")
-    @UrlMapping("/do/it")
-
-    public String home() {
-        return "Hello World!";
-    }
-
-
     /**
      * 新增文章（视频)
      * @param article
      * @return
      */
-    @UrlMapping("/material/cms/addArticle")
-    @RequestMapping(value = "/material/cms/addArticle",method = RequestMethod.POST)
-    @ApiOperation(value = "新增文章（视频)", httpMethod = "POST")
+    @UrlMapping("/material/cms/test388")
+    @RequestMapping(value = "/material/cms/test3gg8gg8",method = RequestMethod.POST)
+    @ApiOperation(value = "home新增文章（视频)test38ggggg8", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "article", value = "ArticleBO对象", required = true, defaultValue ="null", dataType = "ArticleBO", paramType = "body")
+            @ApiImplicitParam(name = "article",
+                    value = "List<ArticleBO_VV>对象",
+                    allowMultiple = true,
+                    required = true, defaultValue ="ArticleBO_VV",
+                    dataType = "ArticleBO_VV" ,
+                    paramType = "body")
     })
 
 
-    public ArticleBO addArticle(@RequestBody @RequestParam( value = "article",required = false) ArticleBO article) {
+    public void  test3( @RequestBody  List<   ArticleBO_VV> article,int page) {
 
-        request.getParameterMap();
-        return article;
+
     }
 
-
-
-    /**
-     * 新增文章（视频)
-     * @param article
-     * @return
-     */
-    @UrlMapping("/material/cms/test")
-    @RequestMapping(value = "/material/cms/test",method = RequestMethod.POST)
-
-
-    public void  test( ArticleBO article) {
-
-        request.getParameterMap();
-
-    }
 
 }
