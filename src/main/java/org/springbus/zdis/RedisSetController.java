@@ -20,8 +20,12 @@ import java.util.concurrent.ExecutionException;
 
 @RestController
 public class RedisSetController {
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+
+    private final RedisTemplate<String, String> redisTemplate;
+
+    public RedisSetController(RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
 
     @RequestMapping(value = "/addSet1W", method = RequestMethod.POST)
