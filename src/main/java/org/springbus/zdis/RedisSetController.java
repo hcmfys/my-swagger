@@ -1,25 +1,22 @@
 package org.springbus.zdis;
 
 import com.alibaba.druid.util.StringUtils;
-import com.google.common.collect.Sets;
-import com.sun.tools.doclets.internal.toolkit.util.ClassUseMapper;
-import io.lettuce.core.*;
 import io.lettuce.core.ScanCursor;
-import org.jooq.meta.derby.sys.Sys;
+import io.lettuce.core.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import sun.util.resources.ga.LocaleNames_ga;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Logger;
 
 @RestController
 public class RedisSetController {
@@ -31,7 +28,7 @@ public class RedisSetController {
     public Set<String> addSet1W(String key) {
         SetOperations setOperations = redisTemplate.opsForSet();
         Random r = new Random(System.currentTimeMillis());
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 42; i++) {
             setOperations.add(key, r.nextInt(10000) + "&index");
         }
         return setOperations.members(key);
@@ -102,7 +99,7 @@ public class RedisSetController {
         return myList;
     }
     @RequestMapping(value = "/scanKey", method = RequestMethod.POST)
-    public DataItem<String> scan(String key,String cursorId) {
+    public DataItem<String> scanKey(String key,String cursorId) {
         DataItem dataItem = new DataItem();
         List<String> retList = new ArrayList<>();
         dataItem.setDataList(retList);
@@ -125,8 +122,12 @@ public class RedisSetController {
                 for (byte[] bb : result.getValues()) {
                     retList.add(keySerializer.deserialize(bb));
                 }
-                dataItem.setCursorId(result.getCursor());
-                System.out.println(cursor);
+
+                ScanCursor resultCursor=new ScanCursor();
+                resultCursor.setCursor(result.getCursor());
+                resultCursor.setFinished(result.isFinished());
+                dataItem.setCursor(resultCursor);
+                System.out.println ( result.getCursor() +"-"+ result.isFinished()  );
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
