@@ -7,7 +7,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 
-public class MyCube extends JFrame implements  MouseMotionListener {
+public class MyCube extends BasicFrame implements  MouseMotionListener {
 
     float X[], Y[], Z[]; //顶点坐标
 
@@ -20,13 +20,10 @@ public class MyCube extends JFrame implements  MouseMotionListener {
     int prevX, prevY;
 
     public static void main(String[] args) {
-        MyCube my =  new MyCube();
-        my.setSize(new Dimension(500, 400));
-        my.init();
+        MyCube myCube=  new MyCube();
 
-        my.setVisible(true);
-        my.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        myCube.run(args);
+        myCube.init();
     }
 
     public void init() {
@@ -74,16 +71,18 @@ public class MyCube extends JFrame implements  MouseMotionListener {
 
         //以下将相邻的顶点
 
-        for (int i = 1; i <= 3; i++)
+        for (int i = 1; i <= 3; i++) {
 
             g.drawLine((int) SX[i], (int) SY[i], (int) SX[i + 1], (int) SY[i + 1]);//循环画三条线
+        }
 
         g.drawLine((int) SX[4], (int) SY[4], (int) SX[1], (int) SY[1]);//终点与起始点相接
 
 
-        for (int i = 5; i <= 7; i++)
+        for (int i = 5; i <= 7; i++) {
 
             g.drawLine((int) SX[i], (int) SY[i], (int) SX[i + 1], (int) SY[i + 1]);
+        }
 
         g.drawLine((int) SX[8], (int) SY[8], (int) SX[5], (int) SY[5]);
 
@@ -104,13 +103,6 @@ public class MyCube extends JFrame implements  MouseMotionListener {
     }
 
 
-    public void mouseClicked(MouseEvent e) {
-
-        //  yrot(10);
-
-        //  repaint();
-
-    }
 
 
     public void mousePressed(MouseEvent e) {
