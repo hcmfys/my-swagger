@@ -16,4 +16,7 @@ public class Student {
     @Range( min = 1 ,max = 30,message = "最大值不能小于0")
     private int age;
 
+    @MyConstraint(message = "sex 不正常")
+    private  int sex;
+
 }
