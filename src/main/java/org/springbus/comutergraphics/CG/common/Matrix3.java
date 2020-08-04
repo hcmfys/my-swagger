@@ -1,11 +1,4 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
 
 // Matrix3クラス
 // 3x3行列のクラス
@@ -37,9 +30,9 @@ public class Matrix3 extends MyObject {
 		for (int i=0;i<9;i++) this.a[i] = 0.0;
 		this.a[0] = this.a[4] = this.a[8] = 1.0;
 	}
-	public Matrix3(Matrix3 t){ 
+	public Matrix3(Matrix3 t){
 		this(t.a);
-	}	
+	}
 
 	// 3x3行列の行列式(determinant)の計算
 	public double determinant(){
@@ -110,7 +103,7 @@ public class Matrix3 extends MyObject {
 	// 3x3行列の逆行列を計算する
 	public Matrix3 inverse() throws SingularMatrixException {
 		double t = this.determinant();
-		if (Math.abs(t) < EPSILON) 
+		if (Math.abs(t) < EPSILON)
 			throw new SingularMatrixException();
 		t = 1.0/t;
 		double[] b = new double[9];
@@ -140,8 +133,8 @@ public class Matrix3 extends MyObject {
 		return(m);
 	}
 
-	// 軸ベクトル(Vector3)vの周りに角度thetaだけ回転する３ｘ３行列
-	// 回転は軸ベクトルの先端から見て右回り
+	//围绕轴矢量（Vector3）v旋转角度theta的3x3矩阵
+	//从轴向量的顶端看，旋转是顺时针方向
 	public Matrix3 rotate(Vector3 v, double theta){
 		Vector3 w = new Vector3(v);
 		w.normalize();
@@ -159,7 +152,7 @@ public class Matrix3 extends MyObject {
     		a[8] = t*w.z*w.z + c;
 		return this;
 	}
-	// 軸ベクトル(dx,dy,dz)の周りに角度thetaだけ回転する３ｘ３行列
+	//3x3矩阵，围绕轴矢量（dx，dy，dz）旋转了角度theta
 	public Matrix3 rotate(
 		double dx, double dy, double dz, double theta){
 		Vector3 v = new Vector3(dx,dy,dz);
@@ -171,7 +164,7 @@ public class Matrix3 extends MyObject {
 
 	// 3x3行列の印刷
 	public void print(){
-		System.out.println("Matrix3クラスの要素");
+		System.out.println("Matrix3类的元素");
 		System.out.println("|"+a[0]+" "+a[1]+" "+a[2]+"|");
 		System.out.println("|"+a[3]+" "+a[4]+" "+a[5]+"|");
 		System.out.println("|"+a[6]+" "+a[7]+" "+a[8]+"|");

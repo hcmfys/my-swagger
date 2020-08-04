@@ -1,11 +1,4 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
 
 // Material.java
 // 材質データ用のクラス
@@ -20,19 +13,19 @@ package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権�
 
 public class Material extends MyObject {
 
-	Color3 ambientColor; // 物体のもつ環境光成分
-	Color3 diffuseColor; // 拡散反射光成分の色　
-		//（通常、太陽のような白色光源のもとで人間の目で観察される色）
-	Color3 specularColor; // ピカッと光る（鏡面反射）成分の色
-	Color3 emissiveColor; // 物体が光源として自然に放つ色
-	double shininess; // ピカッと光る部分の強調度　
-		// (小さいほどぼんやり、大きいとシャープに光る）
-	double transparency; // 透過率　(1.0 完全透明、0.0 不透明）
-	double reflection; // 反射率　（1.0 完全反射、0,0 完全拡散反射物体）
-	double refraction; // 屈折率　
-	Texture texture = null;//テクスチャー
+	Color3 ambientColor; // 物体的环境光分量
+	Color3 diffuseColor; // 漫反射组件颜色
+		//（通常是人眼在白色光源（例如太阳）下观察到的颜色）
+	Color3 specularColor; // 明亮发光的组件的颜色（镜面反射）
+	Color3 emissiveColor; // 物体作为光源自然发出的颜色
+	double shininess; //发光部分的强调程度
+		// （越小越模糊，发出的光线越锐利）
+	double transparency; //透光率（1.0完全透明，0.0不透明）
+	double reflection; // 反射率（1.0完美反射，0,0完美漫反射对象）
+	double refraction; // 折光率
+	Texture texture = null;//质地
 
-	// コンストラクタ
+	// 构造函数
 	public Material(){
 		ambientColor = new Color3(0,0,0);
 		diffuseColor = new Color3(1,1,1);
@@ -56,15 +49,15 @@ public class Material extends MyObject {
 		texture = p.texture;
 	}
 
-	// 環境光の色
+	// 环境光颜色
 	public void setAmbientColor(Color3 c){
-		if (c.isNegativeColor()) throw new 
-			InternalError("環境光の設定が不適切です");
+		if (c.isNegativeColor()) throw new
+			InternalError("错误的环境光设置");
 		ambientColor = c;
 	}
 	public void setAmbientColor(double r, double g, double b){
 		if (r < 0 || g < 0 || b < 0) throw new
-			InternalError("環境光の設定が不適切です");
+			InternalError("错误的环境光设置");
 		ambientColor.r = r;
 		ambientColor.g = g;
 		ambientColor.b = b;
@@ -73,15 +66,15 @@ public class Material extends MyObject {
 		return ambientColor;
 	}
 
-	// 拡散反射光色
+	// 漫反射色
 	public void setDiffuseColor(Color3 c){
-		if (c.isNegativeColor()) throw new 
-			InternalError("拡散反射光の設定が不適切です");
+		if (c.isNegativeColor()) throw new
+			InternalError("不正确的漫反射设置");
 		diffuseColor = c;
 	}
 	public void setDiffuseColor(double r, double g, double b){
 		if (r < 0 || g < 0 || b < 0) throw new
-			InternalError("拡散反射光の設定が不適切です");
+			InternalError("不正确的漫反射设置");
 		diffuseColor.r = r;
 		diffuseColor.g = g;
 		diffuseColor.b = b;
@@ -90,15 +83,15 @@ public class Material extends MyObject {
 		return diffuseColor;
 	}
 
-	// 鏡面反射光色
+	//镜面反射色
 	public void setSpecularColor(Color3 c){
-		if (c.isNegativeColor()) throw new 
-			InternalError("鏡面反射光の設定が不適切です");
+		if (c.isNegativeColor()) throw new
+			InternalError("镜面光设置不正确");
 		specularColor = c;
 	}
 	public void setSpecularColor(double r, double g, double b){
 		if (r < 0 || g < 0 || b < 0) throw new
-			InternalError("鏡面反射光の設定が不適切です");
+			InternalError("镜面光设置不正确");
 		specularColor.r = r;
 		specularColor.g = g;
 		specularColor.b = b;
@@ -107,15 +100,15 @@ public class Material extends MyObject {
 		return specularColor;
 	}
 
-	// 自己発光色
+	// 自发光色
 	public void setEmissiveColor(Color3 c){
-		if (c.isNegativeColor()) throw new 
-			InternalError("自己発光色の設定が不適切です");
+		if (c.isNegativeColor()) throw new
+			InternalError("自发光颜色设置不正确");
 		emissiveColor = c;
 	}
 	public void setEmissiveColor(double r, double g, double b){
 		if (r < 0 || g < 0 || b < 0) throw new
-			InternalError("自己発光色の設定が不適切です");
+			InternalError("自发光颜色设置不正确");
 		emissiveColor.r = r;
 		emissiveColor.g = g;
 		emissiveColor.b = b;
@@ -124,20 +117,20 @@ public class Material extends MyObject {
 		return emissiveColor;
 	}
 
-	// 光沢度
+	// 光泽度
 	public void setShininess(double s){
 		if (s < 0) throw new
-			InternalError("光沢度（鏡面反射べき乗係数）の値が不適切です");
+			InternalError("光泽度值不正确（镜面反射指数系数）");
 		shininess = s;
 	}
 	public double getShininess(){
 		return shininess;
 	}
 
-	// 透過率
+	// 透过率
 	public void setTransparency(double t){
 		if (t < 0) throw new
-			InternalError("透過率の値が不適切です");
+			InternalError("透射率值不合适");
 		transparency = t;
 	}
 	public double getTransparency(){
@@ -147,7 +140,7 @@ public class Material extends MyObject {
 	// 反射率
 	public void setReflection(double r){
 		if (r < 0) throw new
-			InternalError("反射率の値が不適切です");
+			InternalError("反射率值不正确");
 		reflection = r;
 	}
 	public double getReflection(){
@@ -157,33 +150,33 @@ public class Material extends MyObject {
 	// 屈折率
 	public void setRefraction(double r){
 		if (r < 0) throw new
-			InternalError("屈折率の値が不適切です");
+			InternalError("折射率值不正确");
 		refraction = r;
 	}
 	public double getRefraction(){
 		return refraction;
 	}
 
-	// テクスチャー
+	// 质地
 	public void setTexture(Texture p){
 		if (p == null) throw new
-			NullPointerException("テクスチャーの値が不適切です");
+			NullPointerException("纹理值不正确");
 		texture = p;
 	}
 	public Texture getTexture(){
 		return texture;
 	}
 
-	//　材質データの印刷
+	//　打印材料数据
 	public void print(){
-		ambientColor.print("環境光");
-		diffuseColor.print("拡散反射光成分の色");
-		specularColor.print("鏡面反射光成分の色");
-		emissiveColor.print("自己発散光成分の色");
-		System.out.println("光沢度 = "+shininess);
-		System.out.println("透過率　= "+transparency);
+		ambientColor.print("环境光");
+		diffuseColor.print("漫反射组件颜色");
+		specularColor.print("镜面反射光成分的颜色");
+		emissiveColor.print("自发散光组件的颜色");
+		System.out.println("光泽度 = "+shininess);
+		System.out.println("透过率 = "+transparency);
 		System.out.println("反射率 = "+reflection);
-		System.out.println("屈折率 = "+refraction);
-		System.out.println("テクスチャー　= "+texture);
+		System.out.println("折光率 = "+refraction);
+		System.out.println("纹理="+texture);
 	}
 }

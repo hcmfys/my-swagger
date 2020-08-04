@@ -1,19 +1,13 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
 
-// Matrix4クラス
-// 4x4の行列のクラス
-// ここで，アフィン変換を記述する
+
+// Matrix4类
+// 4x4矩阵类
+// 描述仿射变换的位置
 
 public class Matrix4 extends MyObject {
 
-	public double a[]; // ここに4x4の行列の要素を入れる
+	public double a[]; // 将4x4矩阵的元素放在此处
 	/*
 		| a[0]  a[1]  a[2]  a[3] |
 		| a[4]  a[5]  a[6]  a[7] |
@@ -21,21 +15,21 @@ public class Matrix4 extends MyObject {
 		| a[12] a[13] a[14] a[15]|
 	*/
 
-	// コンストラクタ
+	// 构造函数
 	public Matrix4(double b[]){
 		this.a = new double[16];
 		for (int i=0;i<16;i++) this.a[i] = b[i];
 	}
-	public Matrix4(){ // 単位行列で初期化
+	public Matrix4(){ // 用身份矩阵初始化
 		this.a = new double[16];
 		for (int i=0;i<16;i++) this.a[i] = 0.0;
 		this.a[0] = this.a[5] = this.a[10] = this.a[15] = 1.0;
 	}
-	public Matrix4(Matrix4 t){ 
+	public Matrix4(Matrix4 t){
 		this(t.a);
 	}
 
-	//　単位行列に設定
+	//　设置为单位矩阵
 	public Matrix4 identity(){
 		if (this == null)
 			throw new NullPointerException();
@@ -44,12 +38,12 @@ public class Matrix4 extends MyObject {
 		return this;
 	}
 
-	// 行列の代入
+	// 矩阵分配
 	public void assign(Matrix4 v){
 		for (int i=0 ; i < 16 ; i++ ) a[i] = v.a[i];
 	}
 
-	// 4x4行列と4次元ベクトルとの積
+	// 4x4矩阵与4维向量的积
 	public Vector4 multiplyVector4(Vector4 v){
 		Vector4 t = new Vector4();
 		t.x = a[0]*v.x + a[1]*v.y + a[2]*v.z + a[3]*v.w;
@@ -59,7 +53,7 @@ public class Matrix4 extends MyObject {
 		return t;
 	}
 
-	// 4x4行列と4次元座標値との積
+	// 4x4矩阵与4维坐标值的乘积
 	public Vertex4 multiplyVertex4(Vertex4 v){
 		Vertex4 t = new Vertex4();
 		t.x = a[0]*v.x + a[1]*v.y + a[2]*v.z + a[3]*v.w;
@@ -69,7 +63,7 @@ public class Matrix4 extends MyObject {
 		return t;
 	}
 
-	// ２つの4x4行列の積（今の行列に左から掛ける）
+	// 两个4x4矩阵的乘积（乘以左边的当前矩阵）
 	public Matrix4 multiplyMatrix4(Matrix4 b){
 		Matrix4 c = new Matrix4();
 		int i,j,k,m,n,p,r,s;
@@ -103,8 +97,8 @@ public class Matrix4 extends MyObject {
 		for ( k = 0 ; k < 16 ; k++ ) this.a[k] = c.a[k];
 	}
 
-	// 4x4行列の転置行列（行と列を入れ替えた行列）
-	// 転置行列用のインデックス
+	// 4x4矩阵的转置矩阵（行和列交换的矩阵）
+	//转置矩阵的索引
 	final static int[] TR = { 0,4,8,12,1,5,9,13,2,6,10,14,3,7,11,15 };
 	public Matrix4 transpose(){
 		Matrix4 m = new Matrix4();
@@ -114,10 +108,10 @@ public class Matrix4 extends MyObject {
 		return m;
 	}
 
-	// 4x4行列の逆行列
-	// 3x3行列の逆行列問題に変換し，解析的に解く。
+	// 4x4矩阵的逆
+	//转换为3x3矩阵的逆矩阵问题并进行解析求解。
 
-	// 余因子行列用のインデックス
+	//辅助因子矩阵的索引
 	final static int[][] AA = {
  		/* aa00 */ {5,6,7,9,10,11,13,14,15},
 		/* aa10 */ {1,2,3,9,10,11,13,14,15},
@@ -150,19 +144,19 @@ public class Matrix4 extends MyObject {
          		determinant3 = w.determinant();
          		c.a[i] = sign * determinant3;
     		}
-    		determinant4 = 
+    		determinant4 =
 			  a[0]*c.a[0]
 	  		+ a[4]*c.a[1]
 	  		+ a[8]*c.a[2]
 	  		+ a[12]*c.a[3];
-		if (Math.abs(determinant4) < EPSILON) 
+		if (Math.abs(determinant4) < EPSILON)
 			throw new SingularMatrixException();
 		determinant4 = 1.0 / determinant4;
     		for (int i=0 ; i < 16 ; i++ ) c.a[i] *= determinant4;
 		return c;
 	}
 
-	// 任意軸の周りの回転（３ｘ３行列の拡張）
+	//绕任意轴旋转（3x3矩阵扩展）
 	public Matrix4 rotate(Vector3 v, double theta){
 		Matrix3 m3a = new Matrix3();
 		Matrix3 m3b = m3a.rotate(v,theta);
@@ -179,14 +173,14 @@ public class Matrix4 extends MyObject {
 		return m;
 	}
 
-	//4x4行列の印刷
+	//打印4x4矩阵
 	public void printMatrix(){
 		System.out.println("|"+a[0]+" "+a[1]+" "+a[2]+" "+a[3]+"|");
 		System.out.println("|"+a[4]+" "+a[5]+" "+a[6]+" "+a[7]+"|");
 		System.out.println("|"+a[8]+" "+a[9]+" "+a[10]+" "+a[11]+"|");
 		System.out.println("|"+a[12]+" "+a[13]+" "+a[14]+" "+a[15]+"|");	}
 	public void print(){
-		System.out.println("Matrix4クラスの要素");
+		System.out.println("Matrix4类元素");
 		printMatrix();
 	}
 	public void print(String s){

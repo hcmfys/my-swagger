@@ -1,62 +1,47 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
+
 
 // Camera.java
-// カメラ（視点および投影スクリーン定義用）のクラス
-//	プログラム３−１３
-//		Cameraクラスのコンストラクタ，reset(),getCurrentPlainViewMatrix(),
-//		setViewMatrixInverse(),setViewMatrix(),setScreenDetail(),
-//		setScreen(),getScreenX(),getScreenY(),setScreenXY(),areaCode(),
-//		getWorldPosition(),getCameraPosition(),setEyePosition(),
-//		getEyePosition(),setScreenResolution(),getScreenWidth(),
-//		getScreenHeight(),setAspectRatio(),getAspectRatio(),
-//		setFieldOfView(),getFieldOfView(),setFocalLength(),
-//		getFocalLength(),setParallel(),getParallel(),rotate(),
-//		drawLine()メソッド
+//相机（用于视点和投影屏幕定义）类
+//程序3-13
 
 public class Camera extends MyObject {
 
-	MyCanvas m;//描画用のキャンバスクラス
-	Matrix4 viewmat;// 投影変換に使う
-	Matrix4 cammat;//カメラ行列
-	public   double screenMaxX, screenMaxY; // スクリーンの右上座標
-	public double screenMinX, screenMinY; // スクリーンの左下座標
-	public   double deltaHorizontal; // １画素水平に動いたときの実距離
-	public double deltaVertical;   // １画素垂直に動いたときの実距離
+	MyCanvas m;//画布类进行绘制
+	Matrix4 viewmat;// 用于投影转换
+	Matrix4 cammat;//相机矩阵
+	public   double screenMaxX, screenMaxY; //屏幕右上角坐标
+	public double screenMinX, screenMinY; // 屏幕的左下角坐标
+	public   double deltaHorizontal; // 水平移动一个像素时的实际距离
+	public double deltaVertical;   // 垂直移动一个像素时的实际距离
 	Vertex3 eyePosition; // 視点
-	Vector3 upDirection; // 視点から見たスクリーンの真上方向
-	Vector3 toDirection; // スクリーンから視点の方向
-	Vector3 rightDirection; // 視点から見たスクリーンの右方向
-	public boolean parallel = false; // 平行投影かどうかのスイッチ
-	public double focalLength = 1.0; // 焦点距離　(視点からこの距離離れたところにスクリーンが置かれる。）
-	public double fieldOfView = Math.PI/2; // X軸方向の視界（ラジアン）
-	public double aspectRatio=4.0/3.0; // スクリーンのアスペクト比率
-	public int resHorizontal=640;      // スクリーンの横方向の解像度
-	public int resVertical=480;        // スクリーンの縦方向の解像度
-	final static int LEFT_VIEWVOLUME = 0x1;  //ビューボリュームの左側の面
-	final static int RIGHT_VIEWVOLUME = 0x2; //ビューボリュームの右側の面
-	final static int BOTTOM_VIEWVOLUME = 0x4;//ビューボリュームの下側の面
-	final static int TOP_VIEWVOLUME = 0x8;   //ビューボリュームの上側の面
+	Vector3 upDirection; // 从视点正好在屏幕上方
+	Vector3 toDirection; // 从屏幕到视点的方向
+	Vector3 rightDirection; // 从透视图的屏幕右侧
+	public boolean parallel = false; // 平行投影开关
+	public double focalLength = 1.0; //焦距（屏幕放置在距视点此距离的位置。）
+	public double fieldOfView = Math.PI/2; // X轴视场（弧度）
+	public double aspectRatio=4.0/3.0; // 屏幕纵横比
+	public int resHorizontal=640;      // 屏幕水平分辨率
+	public int resVertical=480;        // 屏幕垂直分辨率
+	final static int LEFT_VIEWVOLUME = 0x1;  //视线左侧
+	final static int RIGHT_VIEWVOLUME = 0x2; //右侧视线
+	final static int BOTTOM_VIEWVOLUME = 0x4;//视区下表面
+	final static int TOP_VIEWVOLUME = 0x8;   //视线上方
 
-	// コンストラクタ
-	// デフォルトでＸ軸がrightDirection,
-	// Ｙ軸がupDirection, Z軸がtoDirectionとなる。
-	// 通常は、２つの軸が決まれば、残りの軸方向は、右ねじの法則で求まる。
-	// 視点は原点(0,0,0)がデフォルト
-	// スクリーンの位置は、Z = -1.0（平面上） がデフォルト
+	//构造函数
+	//默认情况下，X轴为rightDirection，
+	// Y轴为upDirection，Z轴为toDirection。
+	//通常，如果确定了两个轴，则可以通过右旋螺纹定律获得其余的轴向方向。
+	//默认情况下，视点为原点（0,0,0）
+	//屏幕位置默认为Z = -1.0（在平面上）
 	public Camera(MyCanvas m) {
 		this.m = m;
 		eyePosition = new Vertex3(0,0,0);
 		upDirection = new Vector3(0,1,0);
 		toDirection = new Vector3(0,0,1);
 		rightDirection = new Vector3(1,0,0);
-		cammat = new Matrix4(); 
+		cammat = new Matrix4();
 		parallel = false;
 		focalLength = 1.0;
 		fieldOfView = Math.PI/2.0;
@@ -70,7 +55,7 @@ public class Camera extends MyObject {
 		this(null);
 	}
 
-	// カメラのリセット
+	//相机重置
 	public void reset(){
 		eyePosition.x = eyePosition.y = eyePosition.z = 0;
 		upDirection.x = upDirection.z = 0; upDirection.y = 1;
@@ -80,7 +65,7 @@ public class Camera extends MyObject {
 		setViewMatrix();
 	}
 
-	// ビュー行列の計算 （内部的に使われる）
+	// 计算视图矩阵（内部使用）
 	private Matrix4 getCurrentPlainViewMatrix(){
 		Matrix4 m = new Matrix4();
 		m.a[0] = rightDirection.x;
@@ -108,7 +93,7 @@ public class Camera extends MyObject {
 		Matrix4 m = getCurrentPlainViewMatrix();
 		setViewMatrixInverse();
 	}
-	// スクリーンの計算（内部的に使われる）
+	// 屏幕计算（内部使用）
 	private void setScreenDetail(){
 		screenMaxX = focalLength * Math.tan(fieldOfView/2.0);
 		screenMaxY = screenMaxX / aspectRatio;
@@ -122,14 +107,14 @@ public class Camera extends MyObject {
 		setScreenDetail();
 	}
 
-	//スクリーンの横と縦のカメラ座標空間でのサイズを返すメソッド
+	//在水平和垂直相机坐标空间中返回屏幕大小的方法
 	public double getScreenX(){ return(screenMaxX-screenMinX); }
 	public double getScreenY(){ return(screenMaxY-screenMinY); }
 
-	//スクリーンの縦と横をカメラ座標値のサイズで設定するメソッド
+	//通过相机坐标值的大小设置屏幕的垂直和水平的方法
 	public void setScreenXY(double xsize, double ysize){
 		if (xsize <= 0 || ysize <= 0)
-			throw new InternalError("スクリーンサイズは正でなければなりません"); 
+			throw new InternalError("屏幕尺寸必须为正");
 		screenMaxX = xsize/2;
 		screenMinX = -xsize/2;
 		screenMaxY = ysize/2;
@@ -140,7 +125,7 @@ public class Camera extends MyObject {
 		deltaVertical = (screenMaxY-screenMinY)/(resVertical-1);
 	}
 
-	// エリアコード
+	// 区号
 	public int areaCode(Vertex3 v){
 		double x = v.x;
 		double y = v.y;
@@ -153,7 +138,7 @@ public class Camera extends MyObject {
 		return code;
 	}
 
-	// カメラ座標から世界座標へ変換 
+	// 从相机坐标转换为世界坐标
 	public Vertex3 getWorldPosition(Vertex3 v){
 		Vertex4 v1 = new Vertex4(v.x,v.y,v.z,1);
 		Vertex4 v2 = cammat.multiplyVertex4(v1);
@@ -161,7 +146,7 @@ public class Camera extends MyObject {
 		return p;
 	}
 
-	// 世界座標からカメラ座標へ変換
+	//从世界坐标转换为相机坐标
 	public Vertex3 getCameraPosition(Vertex3 v){
 		Vertex4 v1 = new Vertex4(v.x,v.y,v.z,1);
 		Vertex4 v2 = viewmat.multiplyVertex4(v1);
@@ -186,10 +171,10 @@ public class Camera extends MyObject {
 		return eyePosition;
 	}
 
-	// スクリーンの解像度
+	// 屏幕分辨率
 	public void setScreenResolution(int Horizontal, int Vertical){
 		if (Horizontal <= 0 || Vertical <= 0)
-			throw new InternalError("スクリーンの解像度が不適切です");
+			throw new InternalError("屏幕分辨率不正确");
 		resHorizontal = Horizontal;
 		resVertical = Vertical;
 		setScreen();
@@ -201,21 +186,21 @@ public class Camera extends MyObject {
 		return resVertical;
 	}
 
-	// スクリーンのアスペクト比率
+	// 屏幕纵横比
 	public void setAspectRatio(double ratio){
 		if (ratio <= 0)
-			throw new InternalError("アスペクト比が不適切です");
+			throw new InternalError("宽高比不合适");
 		aspectRatio = ratio;
 		setScreen();
 	}
 	public double getAspectRatio(){
 		return aspectRatio;
-	}	
+	}
 
-	// 視野角度
+	// 視野角度-可视角度
 	public void setFieldOfView(double fov){
 		if (fov <= 0 || fov >= Math.PI)
-			throw new InternalError("視野角度が不適切です");
+			throw new InternalError("不合适的视角");
 		fieldOfView = fov;
 		setScreenDetail();
 	}
@@ -226,13 +211,13 @@ public class Camera extends MyObject {
 	// 焦点距離
 	public void setFocalLength(double focalLength){
 		if (focalLength <= 0)
-			throw new InternalError("焦点距離が不適切です");
+			throw new InternalError("焦距不合适");
 		this.focalLength = focalLength;
 		setScreenDetail();
 	}
 	public double getFocalLength(){
 		return focalLength;
-	}		
+	}
 
 	// 投影方法
 	public void setParallel(boolean on){
@@ -242,7 +227,7 @@ public class Camera extends MyObject {
 		return parallel;
 	}
 
-	// カメラ座標の回転 
+	// 旋转相机坐标
 	public void rotate(Vector3 axis, double theta){
 		Matrix4 m = new Matrix4();
 		Matrix4 m2 = m.rotate(axis, theta);
@@ -266,11 +251,11 @@ public class Camera extends MyObject {
 		rotate(v,theta);
 	}
 
-	// カメラ座標系でのスクリーン上に線画を描画
+	// 在摄像机坐标系中的屏幕上绘制线条图
 	public void drawLine(double x1, double y1, double z1,
     	double x2, double y2, double z2){
 		double xs1,ys1,xs2,ys2;
-		if (!parallel){//パースペクティブディビジョン
+		if (!parallel){//透视师
 			xs1 = -x1/z1*focalLength;
 			ys1 = -y1/z1*focalLength;
 			xs2 = -x2/z2*focalLength;
