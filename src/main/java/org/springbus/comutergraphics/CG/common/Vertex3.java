@@ -1,22 +1,16 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
 
-// Vertexr3 クラス
-// 3次元頂点座標の保持クラス
-//	プログラム３−３
-//		Vertex3クラスのコンストラクタ
+
+// Vertexr3类
+// 3D顶点坐标的保持类
+//程序3-3
+// Vertex3类的构造方法
 
 public class Vertex3 extends MyObject {
 
 	public double x,y,z;
 
-	//コンストラクタ
+	//构造函数
 	public Vertex3(double x, double y, double z){
 		this.x = x;
 		this.y = y;
@@ -29,7 +23,7 @@ public class Vertex3 extends MyObject {
 		this(v.x,v.y,v.z);
 	}
 
-	// ２つの頂点位置のユークリッド距離
+	// 两个顶点位置之间的欧式距离
 	public static double distance(Vertex3 a, Vertex3 b){
 		double t = (a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y)+(a.z-b.z)*(a.z-b.z);
 		return Math.sqrt(t);
@@ -45,7 +39,7 @@ public class Vertex3 extends MyObject {
 		add(v.x,v.y,v.z);
 	}
 
-	// 頂点座標の印刷
+	//打印顶点坐标
 	public void print(){
 		System.out.println("Vertex3 = ("+x+","+y+","+z+")");
 	}

@@ -1,14 +1,7 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
 
 // Vector4.java
-// 同次座標で表現された4次元ベクトルのクラス
+//由齐次坐标表示的4D矢量类别
 
 public class Vector4 extends MyObject {
 
@@ -28,7 +21,7 @@ public class Vector4 extends MyObject {
 		this.w = 1.0;
 	}
 	public Vector4(){
-		x = y = z = w = 0.0; 
+		x = y = z = w = 0.0;
 	}
 	public Vector4(Vector4 v){
 		this(v.x,v.y,v.z,v.w);
@@ -38,7 +31,7 @@ public class Vector4 extends MyObject {
 	public Vector4 normalize() throws DivideByZeroException {
 		double t = x*x + y*y + z*z + w*w;
 		t = Math.sqrt(t);
-		if (Math.abs(t) < EPSILON) 
+		if (Math.abs(t) < EPSILON)
 			throw new DivideByZeroException();
 		t = 1.0/t;
 		Vector4 u = new Vector4();
@@ -51,7 +44,7 @@ public class Vector4 extends MyObject {
 
 	// ベクトルの内積
 	public double innerProduct(Vector4 a, Vector4 b){
-		double t = 
+		double t =
 			a.x*b.x + a.y*b.y + a.z*b.z + a.w*b.w;
 		return t;
 	}

@@ -1,16 +1,9 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
 
-// Box.java　（箱の定義）
-// 直方体のクラス
-//	プログラム３−９
-//		Boxクラスのコンストラクタ
+// Box.java（框定义）
+//长方体的类
+//程序3-9
+// Box类的构造函数
 
 public class Box extends Object3d {
 
@@ -19,7 +12,7 @@ public class Box extends Object3d {
 	// F = z - zsize/2 = 0 && xt*(1-xt)>=0 && yt*(1-yt)>=0 ||
 	// F = x + xsize/2 = 0 && yt*(1-yt)>=0 && zt*(1-zt)>=0 ||
 	// F = y + ysize/2 = 0 && xt*(1-xt)>=0 && zt*(1-zt)>=0 ||
-	// F = z + zsize/2 = 0 && xt*(1-xt)>=0 && yt*(1-yt)>=0 
+	// F = z + zsize/2 = 0 && xt*(1-xt)>=0 && yt*(1-yt)>=0
 	double xsize; // 箱のＸ軸方向のサイズ　(xsize>0)
 	double ysize; // 箱のＹ軸方向のサイズ　(ysize>0)
 	double zsize; // 箱のＺ軸方向のサイズ　(zsize>0)
@@ -74,7 +67,7 @@ public class Box extends Object3d {
 			yt = (2*y+ysize)/(2*ysize);
 			if (t1 > 0 && t1 < t &&
 				xt*(1-xt)>=0 &&
-				yt*(1-yt)>=0) 
+				yt*(1-yt)>=0)
 				t = t1;
 			t2 = (-zsize/2-o.z)/d.z;
 			x = o.x + t2 * d.x;
@@ -83,7 +76,7 @@ public class Box extends Object3d {
 			yt = (2*y+ysize)/(2*ysize);
 			if (t2 > 0 && t2 < t &&
 				xt*(1-xt)>=0 &&
-				yt*(1-yt)>=0) 
+				yt*(1-yt)>=0)
 				t = t2;
 		}
 
@@ -97,7 +90,7 @@ public class Box extends Object3d {
 			yt = (2*y+ysize)/(2*ysize);
 			if (t1 > 0 && t1 < t &&
 				zt*(1-zt)>=0 &&
-				yt*(1-yt)>=0) 
+				yt*(1-yt)>=0)
 				t = t1;
 			t2 = (-xsize/2-o.x)/d.x;
 			z = o.z + t2 * d.z;
@@ -106,7 +99,7 @@ public class Box extends Object3d {
 			yt = (2*y+ysize)/(2*ysize);
 			if (t2 > 0 && t2 < t &&
 				zt*(1-zt)>=0 &&
-				yt*(1-yt)>=0) 
+				yt*(1-yt)>=0)
 				t = t2;
 		}
 
@@ -120,7 +113,7 @@ public class Box extends Object3d {
 			xt = (2*x+xsize)/(2*xsize);
 			if (t1 > 0 && t1 < t &&
 				zt*(1-zt)>=0 &&
-				xt*(1-xt)>=0) 
+				xt*(1-xt)>=0)
 				t = t1;
 			t2 = (-ysize/2-o.y)/d.y;
 			z = o.z + t2 * d.z;
@@ -129,7 +122,7 @@ public class Box extends Object3d {
 			xt = (2*x+xsize)/(2*xsize);
 			if (t2 > 0 && t2 < t &&
 				zt*(1-zt)>=0 &&
-				xt*(1-xt)>=0) 
+				xt*(1-xt)>=0)
 				t = t2;
 		}
 
@@ -147,11 +140,11 @@ public class Box extends Object3d {
 			ray.intersection = worldSolution;
 			ray.intersectionLocal = localSolution;
 			return;
-		}	
+		}
 		return;
 	}
 
-	// 箱とレイの交点での法線ベクトルなどの計算
+	//框线与射线相交处的法向矢量等的计算
 	public void setNearestIntersection(Ray ray){
 		double x = ray.intersectionLocal.x;
 		double y = ray.intersectionLocal.y;
@@ -159,7 +152,7 @@ public class Box extends Object3d {
 		Vector3 localNormal;
 		Box p = (Box)ray.hitNode.element;
 		int type=0;
-		if (Math.abs(z-p.zsize/2) < EPSILON){ 
+		if (Math.abs(z-p.zsize/2) < EPSILON){
 			// Z = zsize/2と交差
 			localNormal = new Vector3(0,0,1);
 			type = 1;

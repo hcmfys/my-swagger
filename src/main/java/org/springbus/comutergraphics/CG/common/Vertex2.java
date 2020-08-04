@@ -1,14 +1,7 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
 
-// Vertexr2 クラス
-// 2次元テクスチャー座標の保持クラス
+// Vertexr2类
+//保持2D纹理坐标的类
 
 public class Vertex2 extends MyObject {
 
@@ -26,7 +19,7 @@ public class Vertex2 extends MyObject {
 		this(v.x,v.y);
 	}
 
-	// テクスチャー座標の印刷
+	//打印纹理坐标
 	public void print(){
 		System.out.println("Vertex2 = ("+x+","+y+")");
 	}

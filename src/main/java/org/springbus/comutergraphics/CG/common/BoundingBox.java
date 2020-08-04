@@ -1,13 +1,6 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
 
-// BoundingBox.java　（バウンディングボックスの定義）
+// BoundingBox.java（边界框的定义）
 
 public class BoundingBox extends MyObject {
 
@@ -15,7 +8,7 @@ public class BoundingBox extends MyObject {
 	double xsize, ysize, zsize;//バウンディングボックスのサイズ
 
 	// コンストラクタ
-	public BoundingBox(Vertex3 center, 
+	public BoundingBox(Vertex3 center,
 		double xsize, double ysize, double zsize){
 		this.center = center;
 		this.xsize = xsize;
@@ -36,7 +29,7 @@ public class BoundingBox extends MyObject {
 			yt = (2*(y-center.y)+ysize)/(2*ysize);
 			if (t1 > 0 && t1 < t &&
 				xt*(1-xt)>=0 &&
-				yt*(1-yt)>=0) 
+				yt*(1-yt)>=0)
 				t = t1;
 			t2 = (center.z-zsize/2-o.z)/d.z;
 			x = o.x + t2 * d.x;
@@ -45,7 +38,7 @@ public class BoundingBox extends MyObject {
 			yt = (2*(y-center.y)+ysize)/(2*ysize);
 			if (t2 > 0 && t2 < t &&
 				xt*(1-xt)>=0 &&
-				yt*(1-yt)>=0) 
+				yt*(1-yt)>=0)
 				t = t2;
 		}
 		// X = center.x+xsize/2 || X = center.x-xsize/2平面との交点計算
@@ -58,7 +51,7 @@ public class BoundingBox extends MyObject {
 			yt = (2*(y-center.y)+ysize)/(2*ysize);
 			if (t1 > 0 && t1 < t &&
 				zt*(1-zt)>=0 &&
-				yt*(1-yt)>=0) 
+				yt*(1-yt)>=0)
 				t = t1;
 			t2 = (-xsize/2-o.x)/d.x;
 			z = o.z + t2 * d.z;
@@ -67,7 +60,7 @@ public class BoundingBox extends MyObject {
 			yt = (2*(y-center.y)+ysize)/(2*ysize);
 			if (t2 > 0 && t2 < t &&
 				zt*(1-zt)>=0 &&
-				yt*(1-yt)>=0) 
+				yt*(1-yt)>=0)
 				t = t2;
 		}
 		// Y = center.y+ysize/2 || Y = center.y-ysize/2平面との交点計算
@@ -80,7 +73,7 @@ public class BoundingBox extends MyObject {
 			xt = (2*(x-center.x)+xsize)/(2*xsize);
 			if (t1 > 0 && t1 < t &&
 				zt*(1-zt)>=0 &&
-				xt*(1-xt)>=0) 
+				xt*(1-xt)>=0)
 				t = t1;
 			t2 = (center.y-ysize/2-o.y)/d.y;
 			z = o.z + t2 * d.z;
@@ -89,7 +82,7 @@ public class BoundingBox extends MyObject {
 			xt = (2*(x-center.x)+xsize)/(2*xsize);
 			if (t2 > 0 && t2 < t &&
 				zt*(1-zt)>=0 &&
-				xt*(1-xt)>=0) 
+				xt*(1-xt)>=0)
 				t = t2;
 		}
 		if (t > LARGE) return false;

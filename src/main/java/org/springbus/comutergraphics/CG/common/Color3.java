@@ -1,23 +1,16 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
 
-// Color3 クラス
-// ３次元頂点のカラー値の保持クラス
-//	プログラム３−２２
-//		Color3クラスのコンストラクタ，clamp(),isNegativeColor(),
-//		scale(),assign(),add(),subtract(),multiply()メソッド
+// Color3类
+//拥有3D顶点颜色值的类
+//程序3-22
+// Color3类的构造函数，lamp（），isNegativeColor（），
+// scale（），assign（），add（），subtract（），multiply（）方法
 
 public class Color3 extends MyObject {
 
 	public double r,g,b;
 
-	// コンストラクタ
+	// 构造函数
 	public Color3(double r, double g, double b){
 		if (r < 0 || g < 0 || b < 0)
 			throw new InternalError("色値が不適切です。");
@@ -26,7 +19,7 @@ public class Color3 extends MyObject {
 	public Color3(){ this(0,0,0);} //黒色
 	public Color3(Color3 c){ this(c.r,c.g,c.b); }
 
-	// 色値の[0-1]空間へのクランプ
+	// 将颜色值限制为[0-1]空间
 	public void clamp(){
 		if (this.r < 0.0) this.r = 0.0;
 		else if (this.r > 1.0) this.r = 1.0;
