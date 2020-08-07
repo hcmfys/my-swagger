@@ -1,37 +1,24 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
 
-// ObjectWorld.java （オブジェクトの世界の構築用）
-//	プログラム３−１２
-//		createUniverse(),accumulateWorldMatrix(),traverseMatrix4(),
-//		addCamera()メソッド
-//	プログラム３−１５
-//		drawWorld(),draw()メソッド追加
-//	プログラム３−２７
-//		getRootNode(),setBackgroundColor(),getBackgroundColor(),
-//		setupRaytrace(),getPixel(),setPixek(),getRaytracedImage()メソッド追加
+// ObjectWorld.java（用于构建对象世界）
+//程序3-12
+
 
 import java.awt.*;
 import java.awt.image.*;
 
 public class ObjectWorld extends MyObject {
 
-	Camera activeCamera = null;// 現在アクティブなカメラ
-	CameraList header = null; // カメラリストの先頭ポインタ
-	CameraList tailer = null; // カメラリストの末尾のポインタ
-	ObjectNode root = null;// シーングラフの「根」ノード
-	int[] pixel = null; // シェーディングした結果の格納用画素配列
-	MemoryImageSource mis = null; // 画像の格納用のメモリ
-	Image img = null; // シェーディングにおいて生成される画像
+	Camera activeCamera = null; //当前正在使用的相机
+	CameraList header= null; //摄像机列表的开始指针
+	CameraList tailer = null; //指向摄像机列表末尾的指针
+	ObjectNode root = null; //场景图的“根”节点
+	int [] pixel = null; //用于存储阴影结果的像素数组
+	MemoryImageSource mis = null; //用于存储图像的内存
+	Image img = null; //通过阴影生成的图像
 	Color3 background = new Color3(0,0,0); // 黒
 
-	// 世界の先頭は、Groupオブジェクトとする。
+	//世界之巅是一个Group对象。
 	public ObjectNode createUniverse(){
 		Group g = new Group();
 		ObjectNode node = new ObjectNode(g,"Universe");
@@ -42,15 +29,15 @@ public class ObjectWorld extends MyObject {
 	}
 	public ObjectNode getRootNode() { return root;}
 
-	// 背景色の設定
+	// 设置背景色
 	public void setBackgroundColor(Color3 c){
 		if (c.isNegativeColor())
-			throw new InternalError("背景色が不適切です。");
+			throw new InternalError("背景颜色不正确。");
 		this.background = c;
 	}
 	public void setBackgroundColor(double r, double g, double b){
 		if (r < 0 || g < 0 || b < 0)
-			throw new InternalError("背景色が不適切です。");
+			throw new InternalError("背景颜色不正确。");
 		this.background.r = r;
 		this.background.g = g;
 		this.background.b = b;
@@ -59,10 +46,10 @@ public class ObjectWorld extends MyObject {
 		return background;
 	}
 
-	// 世界をトラバースして累積行列(及びその逆行列)を各ノードにセットする。
-	// 同時に材質の伝搬を行う。
-	// ただし、rootには兄弟はいないと仮定する
-	public void accumulateWorldMatrix(){ 
+	//遍历世界并在每个节点处设置累积矩阵（及其逆矩阵）。
+	//同时传播材料。
+	//但假设root没有兄弟姐妹
+	public void accumulateWorldMatrix(){
 		ObjectNode p = root;
 		if (p == null) return;
 		int level = 0;
@@ -75,8 +62,8 @@ public class ObjectWorld extends MyObject {
 		traverseMatrix4(p.child,level,p.material);
 	}
 
-	// 世界の再帰的なトラバースによる累積行列(及びその逆行列)をセットする。
-	// 同時に材質データも伝搬させる。
+	//根据世界的递归遍历设置累积矩阵（及其逆矩阵）。
+	//同时传播物料数据。
 	public void traverseMatrix4(ObjectNode node, int level, Material m)
 		throws SingularMatrixException {
 		if (node == null) return;
@@ -92,9 +79,9 @@ public class ObjectWorld extends MyObject {
 			level++;
 			traverseMatrix4(node.child, level, node.dummyMaterial);
 		}
-		// 兄弟のセット
-		if (node.next != null) //兄弟の材質は親のもののみ
-			traverseMatrix4(node.next, level, 
+		// 兄弟集
+		if (node.next != null) //只有兄弟姐妹的材料
+			traverseMatrix4(node.next, level,
 				node.parent.dummyMaterial);
 	}
 
@@ -102,7 +89,7 @@ public class ObjectWorld extends MyObject {
 	public void drawWorld(){
 		if (root == null) return;
 		Camera c = activeCamera;
-		if (c == null){ 
+		if (c == null){
 			c = activeCamera = new Camera();
 			this.addCamera(c,"DEFAULT_CAMERA");
 		}
@@ -112,7 +99,7 @@ public class ObjectWorld extends MyObject {
 		draw(c,root.child);
 	}
 
-	// 世界の再帰的なトラバースと線画表示
+	// 世界递归导线和线图显示
 	public void draw(Camera c, ObjectNode node){
 		if (node == null) return;
 		if (node.isShapeNode())	node.element.draw(c,node);
@@ -122,13 +109,13 @@ public class ObjectWorld extends MyObject {
 		if (node.child != null)	draw(c,node.child);
 	}
 
-	// レイトレース
+	// 射线迹
 	public Camera setupRaytrace(){
 		// 世界にオブジェクトがなければなにもしない
 		if (root == null) return null;
 		// アクティブなカメラの設定
 		Camera c = activeCamera;
-		if (c == null){ 
+		if (c == null){
 			c = activeCamera = new Camera();
 			this.addCamera(c,"DEFAULT_CAMERA");
 		}
@@ -206,8 +193,8 @@ public class ObjectWorld extends MyObject {
 		return component.createImage(mis);
 	}
 
-	// カメラを世界に加える。
-	// 自動的にそのカメラがアクティブになる。
+	//向世界添加相机。
+	//相机将自动启动。
 	public void addCamera(Camera o, String s){
 		if (o == null) throw new NullPointerException();
 		CameraList newElement = new CameraList(o,s);
@@ -222,7 +209,7 @@ public class ObjectWorld extends MyObject {
 		activeCamera = o;
 	}
 
-	// カメラを探す
+	// 寻找相机
 	private Camera findCamera(Camera cam){
 		CameraList p = header;
 		while (p != null){
@@ -232,7 +219,7 @@ public class ObjectWorld extends MyObject {
 		return null;
 	}
 
-	// 指定されたカメラが世界で定義されているかどうか
+	//是否在世界中定义了指定的摄像机
 	private boolean isDefinedCamera(Camera cam){
 		CameraList p = header;
 		while (p != null){
@@ -242,13 +229,13 @@ public class ObjectWorld extends MyObject {
 		return false;
 	}
 
-	// 既に世界で定義したカメラをアクティブにする
-	// アクティブなカメラでそのスクリーンに描画計算が行われる。
+	//激活世界中已经定义的摄像头
+	//绘图计算是由活动摄像机在屏幕上完成的。
 	public void setCameraActive(Camera cam){
 		if (isDefinedCamera(cam)) activeCamera = cam;
 	}
 
-	// 世界をトラバースをし、印刷
+	//遍历世界并打印
 	public void printWorld(){
 		ObjectNode p = root;
 		if (p == null) return;
@@ -259,7 +246,7 @@ public class ObjectWorld extends MyObject {
 		printObjectNode(p.child, level);
 	}
 
-	// 世界の再帰的なトラバースと印刷
+	// 世界递归遍历和印刷
 	public void printObjectNode(ObjectNode node, int level){
 		if (node == null) return;
 		System.out.println("**************************************");
@@ -269,7 +256,7 @@ public class ObjectWorld extends MyObject {
 		node.inv.print("inv");
 		node.dummyMaterial.print();
 		// 兄弟の印刷
-		if (node.next != null) 
+		if (node.next != null)
 			printObjectNode(node.next, level);
 		// 子供の印刷
 		if (node.child != null){

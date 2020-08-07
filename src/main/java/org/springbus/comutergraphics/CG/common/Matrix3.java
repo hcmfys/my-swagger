@@ -162,7 +162,7 @@ public class Matrix3 extends MyObject {
 		return rotate(v.x,v.y,v.z,v.w);
 	}
 
-	// 3x3行列の印刷
+	// 打印3x3矩阵
 	public void print(){
 		System.out.println("Matrix3类的元素");
 		System.out.println("|"+a[0]+" "+a[1]+" "+a[2]+"|");

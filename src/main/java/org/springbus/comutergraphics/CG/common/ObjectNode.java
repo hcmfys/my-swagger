@@ -1,48 +1,32 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
 
-// ObjectNode.java　
-// シーングラフ（兄弟をリンク付きリストでもつＮ分木）のノードの定義
-// すべてのノードはローカルな変換行列とelementという名前のオブジェクトをもつ。
-// ノードが光源のインスタンスであれば、その光源はすべての兄弟および
-// その光源の子供のノードたちを照射すると仮定する。
-// 材質(material)は初期設定ではnullとし、setMaterialメソッドではじめて
-// 材質が定義される。材質は、自分より年下の兄弟と子供に伝搬すると仮定する。
-// ただし、伝搬するのは材質がnullのノードに対してのみ。
-//
-//	プログラム３−１１
-//		ObjectNodeクラスのコンストラクタ，addChild(),addBrother(),
-//		reset(),translate(),scale(),rotate(),
-//		isShapeNode(),isLightNode()メソッ
-//	プログラム３−２４
-//		setMaterial(),getOriginalMaterial(),getMaterial().
-//		getWorldPosition(),getWorldVector(),getWorldNormal(),
-//		getLocalPosition(),getLocalVector()メソッド追加
+// ObjectNode.java
+//场景图的节点定义（链表中具有同级的N元树）
+//每个节点都有一个局部转换矩阵和一个名为element的对象。
+//如果该节点是光源的实例，则该光源是
+//假设您要照亮光源的子节点。
+//默认情况下，材质为null
+//定义材料。假设材料传播给了年幼的兄弟姐妹和孩子。
+//但是，它仅传播到材料为null的节点。
 
 public class ObjectNode extends MyObject {
 
-	String name = null; // シーングラフの中でのこのノードの名前
-	Matrix4 mat = null; // ローカルな変換行列
-	Matrix4 acm = null; // 世界からの累積行列　（計算用）
-	Matrix4 inv = null; // 世界からの累積行列の逆行列　（計算用）
-	Material material = null; // 材質設定用
-	Material dummyMaterial = null; // 材質伝搬用（かつ計算用）
-	Object3d element = null; // ノードの要素
-	ObjectNode next = null;// 兄弟ノード
-	public ObjectNode child = null;// 子供ノード
-	ObjectNode parent = null;// 親ノード
+	String name = null; //场景图中此节点的名称
+	Matrix4 mat = null; //局部变换矩阵
+	Matrix4 acm = null; //来自世界的累积矩阵（用于计算）
+	Matrix4 inv = null; //来自世界的累积矩阵的逆矩阵（用于计算）
+	Material material = null; //用于材质设置
+	Material dummyMaterial = null; //用于材料传播（和计算）
+	Object3d element = null; //节点元素
+	ObjectNode next = null; //兄弟节点
+	public ObjectNode child = null; //子节点
+	ObjectNode parent = null; //父节点
 
-	// コンストラクタ
+	// 构造函数
 	ObjectNode(Object3d element, String name) {
 		this.element = element;
 		this.name = name;
-		this.mat = new Matrix4();//4x4行列の初期化
+		this.mat = new Matrix4();//初始化4x4矩阵
 		this.acm = null;
 		this.inv = null;
 		this.material = null;
@@ -51,7 +35,7 @@ public class ObjectNode extends MyObject {
 		this.parent = null;
 		this.child = null;
 	}
-	private ObjectNode(ObjectNode node){ // ノードの再帰的コピー
+	private ObjectNode(ObjectNode node){ // 节点的递归副本
 		this.element = node.duplicate(node.element);
 		this.name = node.name;
 		this.mat = new Matrix4(node.mat);
@@ -63,10 +47,10 @@ public class ObjectNode extends MyObject {
 		if (node.next == null) this.next = null;
 		else this.next = new ObjectNode(node.next);
 		this.parent = node.parent;
-		if (node.child == null) this.child = null; 
+		if (node.child == null) this.child = null;
 		else this.child = new ObjectNode(node.child);
 	}
-	// コピー用のコンストラクタ
+	// 复制构造函数
 	private ObjectNode(ObjectNode node, String name){
  		if (node == null) throw new NullPointerException();
 		this.element = node.duplicate(node.element);
@@ -84,7 +68,7 @@ public class ObjectNode extends MyObject {
 		else this.child = new ObjectNode(node.child);
 	}
 
-	// ノードのタイプチェック
+	// 节点类型检查
 	private boolean isInvalidNodeType(Object element){
 		if (element instanceof Material ||
 		    element instanceof Texture ||
@@ -106,7 +90,7 @@ public class ObjectNode extends MyObject {
 			String s = element.toString();
 			int index = s.indexOf((int)'@');
 			String ss = s.substring(0,index);
-			System.out.println(ss+"はシーングラフのノードに出来ません。");
+			System.out.println(ss+"不能是场景图中的节点。");
 			return true;
 		}
 		return false;
@@ -123,7 +107,7 @@ public class ObjectNode extends MyObject {
 		return false;
 	}
 
-	// 光源ノードかどうかのチェック
+	// 检查光源节点
 	public boolean isLightNode(){
 		if (element instanceof PointLight ||
 		    element instanceof DirectionalLight)
@@ -131,7 +115,8 @@ public class ObjectNode extends MyObject {
 		return false;
 	}
 
-	// ノードの複製（コピーコンストラクタで使用）
+
+	//复制节点（在复制构造函数中使用）
 	public Object3d duplicate(Object3d element){
 		if (element instanceof Sphere){
 			Sphere p = (Sphere) element;
@@ -175,49 +160,49 @@ public class ObjectNode extends MyObject {
 		}
 		else if (element instanceof DirectionalLight){
 			DirectionalLight p = (DirectionalLight)element;
-			DirectionalLight newP = 
+			DirectionalLight newP =
 				new DirectionalLight(p);
 			return newP;
 		}
 		return null;
 	}
 
-	// 子供の追加
+	// 加子
 	public ObjectNode addChild(Object3d element, String name){
-		if (isInvalidNodeType(element)) 
-			throw new InternalError("子供ノードに出来ません");
+		if (isInvalidNodeType(element))
+			throw new InternalError("不能是子节点");
 		ObjectNode t=null;
-		if (this.child == null){//子供がいない場合
+		if (this.child == null){//如果你没有孩子
 			this.child = t = new ObjectNode(element,name);
 		}
-		else // 子供がいたら兄弟の末尾に追加
+		else // 如果有孩子，添加到兄弟姐妹中
 			t = this.child.addBrother(element,name);
-		t.parent = this;// 親は同じ
+		t.parent = this;// 父母都一样
 		return t;
-	} 
+	}
 	public ObjectNode addChild(ObjectNode node){
 		ObjectNode t;
 		if (node == null) throw new NullPointerException();
-		if (this.child == null)//子供がいない場合
+		if (this.child == null)//如果你没有孩子
 			this.child = t = node;
-		else //子供がいたら兄弟の末尾に追加
+		else //如果有孩子，添加到兄弟姐妹中
 			t = this.child.addBrother(node);
-		t.parent = this;//親は同じ
+		t.parent = this;//父母都一样
 		return t;
 	}
 
-	// 親のデータ返答
+	// 父级数据响应
 	public ObjectNode getParent(ObjectNode node){
 		return node.parent;
 	}
 
-	// 兄弟の追加
+	// 添加同级
 	public ObjectNode addBrother(Object3d element, String name){
 		ObjectNode t=null;
-		if (this.next == null) { // 初めての兄弟
+		if (this.next == null) { // 第一兄弟
 			this.next = t = new ObjectNode(element,name);
 		}
-		else {//兄弟リストの末尾に追加
+		else {//添加到同级列表的末尾
 			ObjectNode q;
 			ObjectNode p = this.next;
 			do {
@@ -232,7 +217,7 @@ public class ObjectNode extends MyObject {
 	public ObjectNode addBrother(ObjectNode node){
 		ObjectNode t=null;
 		if (node == null) throw new NullPointerException();
-		if (this.next == null){ // 初めての兄弟
+		if (this.next == null){ // 第一兄弟
 			this.next = t = node;
 		}
 		else {

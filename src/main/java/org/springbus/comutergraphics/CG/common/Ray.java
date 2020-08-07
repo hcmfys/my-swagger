@@ -1,22 +1,8 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
 
-// Ray.java 
-// レイのクラス
-//	プログラム３−２５
-//		Rayコンストラクタ，getNearerIntersection(),
-//		setNearestIntersection(),shading(),Lambertian(),TorranceSparrow(),
-//		localLighting().lightIntensity(),localIntensity(),materialIntensity(),
-//		reflectedIntensity(),transmittedIntensity(),ReflectedDirection(),
-//		RefractedDirection(),shoot(),start()メソッド
-//	プログラム３−３２
-//		getTexlOpacity(),getTexelColor(),textureColor()メソッド追加
+// Ray.java
+
+
 
 public class Ray extends MyObject {
 
@@ -69,7 +55,7 @@ public class Ray extends MyObject {
 		this.opacity = 1.0;
 		this.refraction = 1.0;
 		this.currentImageX = i;
-		this.currentImageY = j;	
+		this.currentImageY = j;
 	}
 	public Ray(Ray ray, Vector3 direction){//コピー用のコンストラクタ
 		this.t = HUGEREAL;
@@ -88,7 +74,7 @@ public class Ray extends MyObject {
 		// これは，同一交点の重複を防ぐため
 		this.origin.add(
 			direction.x*LITTLE,
-			direction.y*LITTLE,	
+			direction.y*LITTLE,
 			direction.z*LITTLE);
 		this.direction = direction;
 		this.color = new Color3(0,0,0);// 黒
@@ -97,7 +83,7 @@ public class Ray extends MyObject {
 		this.opacity = 1.0;
 		this.refraction = 1.0;
 		this.currentImageX = ray.currentImageX;
-		this.currentImageY = ray.currentImageY;	
+		this.currentImageY = ray.currentImageY;
 	}
 
 	// より近い交点を探索
@@ -115,10 +101,10 @@ public class Ray extends MyObject {
 	// 以下のシェーディングモデルで輝度を計算
 	// I = M(emisssive) + (1-M(transparency))*Im +
 	//	M(transparency)*It
-	// 
+	//
 	// It = M(refraction)* (trasnmitted ray color)
 	//
-	// Im = SUM[ Li(on)*attenuation(i)*Irgb(i)*(Ai+Di+Si)] + 
+	// Im = SUM[ Li(on)*attenuation(i)*Irgb(i)*(Ai+Di+Si)] +
 	//	M(reflection) * (reflected ray color)
 	//
 	// Irgb = color of i-th light source
@@ -145,12 +131,12 @@ public class Ray extends MyObject {
 			c.add(cm);
 		}
 		if (Math.abs(m.transparency)>EPSILON ||
-			(m.texture != null && Math.abs(this.opacity-1)>EPSILON)){ 
+			(m.texture != null && Math.abs(this.opacity-1)>EPSILON)){
 			// 透明度がある
 			Color3 ct = transmittedIntensity();
 			if (m.texture == null)
 				ct.scale(m.transparency);
-			else    
+			else
 				ct.scale(1-this.opacity);
 			c.add(ct);
 		}
@@ -214,21 +200,21 @@ public class Ray extends MyObject {
 		double v = this.v;
 		double ss = u * (1 - u);
 		double tt = v * (1 - v);
-		
-		if (ss < 0.0 || tt < 0.0) { 
+
+		if (ss < 0.0 || tt < 0.0) {
 			// ray.u or ray.v is out of range [0,1]
 			if (!m.texture.repeatU){
 				if (u < 0.0) u = 0.0;
 				else if (u > 1.0) u = 1.0;
 			}
-			else if (ss < 0.0) // periodic 
+			else if (ss < 0.0) // periodic
 				u -= Math.floor(u);
 
 			if (!m.texture.repeatV){
 				if (v < 0.0) v = 0.0;
 				else if (v > 1.0) v = 1.0;
 			}
-			else if (tt < 0.0) // periodic 
+			else if (tt < 0.0) // periodic
 				v -= Math.floor(v);
 		}
 
@@ -324,7 +310,7 @@ public class Ray extends MyObject {
 		if (lightNode.element instanceof PointLight){
 			PointLight p = (PointLight)lightNode.element;
 			if (!p.on) return c; // スイッチがついてない
-			Vertex3 lightWorldPosition = 
+			Vertex3 lightWorldPosition =
 				lightNode.getWorldPosition(p.location);
 			double d = Vertex3.distance(this.intersection,
 				lightWorldPosition);
@@ -344,13 +330,13 @@ public class Ray extends MyObject {
 			}
 			ray = null;//ガーベッジコレクション用
 			// 減衰率の計算
-			double attenuation = 
+			double attenuation =
 					  p.attenuation.x
 					+ p.attenuation.y*d
 					+ p.attenuation.z*d*d;
 			if (attenuation < 1.0)
 				attenuation = 1.0;
-			else 
+			else
 				attenuation = 1.0 / attenuation;
 			c.assign(p.color);
 			c.scale(attenuation);
@@ -435,7 +421,7 @@ public class Ray extends MyObject {
 		ray = null;
 		return c;
 	}
-	
+
 	// レイの交点上での視線に対する反射方向のベクトルの計算
 	public Vector3 ReflectedDirection(){
 		Vector3 v = new Vector3(this.intersectionNormal);
@@ -489,7 +475,7 @@ public class Ray extends MyObject {
 		// find nearest object;
 		start(node);
 		if (this.t > LARGE // 遠すぎる
-			|| Math.abs(t)<EPSILON // 同一点での交差を避ける 
+			|| Math.abs(t)<EPSILON // 同一点での交差を避ける
 		    || this.hitNode == null) { // 交点なし
 			this.color.r = this.objectWorld.background.r;
 			this.color.g = this.objectWorld.background.g;
@@ -511,4 +497,4 @@ public class Ray extends MyObject {
 		start(node.next);//兄弟ノードで交点計算
 		start(node.child);//子供ノードで交点計算
 	}
-} 
+}

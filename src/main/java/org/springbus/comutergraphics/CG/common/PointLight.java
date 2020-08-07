@@ -1,30 +1,18 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
 
-// PointLight.java （点光源）
-// 点光源のクラス
-//	プログラム３−２０
-//		PointLightコンストラクタ，setLocation(),getLocation(),
-//		setIntensity(),getIntensity(),setAmbientIntensity(),
-//		getAmbientIntensity(),setColor(),getColor(),
-//		setAttenuation(),getAttenuation(),setRadius(),getRadius(),
-//		setSwitch(),getSwitch()メソッド
+// PointLight.java（点光源）
+//点源类
+//程序3-20
 
 public class PointLight extends Object3d {
 
 	Vertex3 location; // 点光源の位置
-	double intensity = 1.0; // 点光源の明るさ(無限大 > intensity >0) 
+	double intensity = 1.0; // 点光源の明るさ(無限大 > intensity >0)
 	Color3 color; // 点光源の色　(RGB)
-	// 点光源の減衰モデル： 
+	// 点光源の減衰モデル：
 	// 1/(attenuation.x+r*attenuation.y+r*r*attenuation.z)で減衰
 	// ただしrは物体と点光源との距離
-	Vertex3 attenuation; 
+	Vertex3 attenuation;
 	boolean on = true; // 点光源がついているかどうか
 	double radius = LARGE; // 点光源の及ぶ範囲（これより外には届かない）
 	double ambientIntensity = 0.0; // 光源がもつ環境光の強度
@@ -112,10 +100,10 @@ public class PointLight extends Object3d {
 	public Vertex3 getAttenuation(){ return attenuation; }
 
 	// 点光源の及ぼす範囲
-	public void setRadius(double radius){ 
+	public void setRadius(double radius){
 		if (radius <= 0)
 			throw new InternalError("点光源の影響範囲が不適切です");
-		this.radius = radius; 
+		this.radius = radius;
 	}
 	public double gteRadius(){ return radius; }
 
