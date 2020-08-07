@@ -54,6 +54,12 @@ public class Matrix4 extends MyObject {
 	}
 
 	// 4x4矩阵与4维坐标值的乘积
+
+	/**
+	 * 4x4矩阵与4维坐标值的乘积
+	 * @param v
+	 * @return
+	 */
 	public Vertex4 multiplyVertex4(Vertex4 v){
 		Vertex4 t = new Vertex4();
 		t.x = a[0]*v.x + a[1]*v.y + a[2]*v.z + a[3]*v.w;
