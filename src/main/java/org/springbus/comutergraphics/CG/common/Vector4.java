@@ -7,7 +7,7 @@ public class Vector4 extends MyObject {
 
 	public double x,y,z,w;
 
-	//コンストラクタ
+	//构造函数
 	public Vector4(double x, double y, double z, double w){
 		this.x = x;
 		this.y = y;
@@ -27,7 +27,7 @@ public class Vector4 extends MyObject {
 		this(v.x,v.y,v.z,v.w);
 	}
 
-	// ベクトルの正規化　（大きさを1にすること）
+	// 向量归一化（使大小为1）
 	public Vector4 normalize() throws DivideByZeroException {
 		double t = x*x + y*y + z*z + w*w;
 		t = Math.sqrt(t);
@@ -42,14 +42,14 @@ public class Vector4 extends MyObject {
 		return u;
 	}
 
-	// ベクトルの内積
+	// 矢量点积
 	public double innerProduct(Vector4 a, Vector4 b){
 		double t =
 			a.x*b.x + a.y*b.y + a.z*b.z + a.w*b.w;
 		return t;
 	}
 
-	// ベクトルの印刷
+	// 矢量印刷
 	public void print(){
 		System.out.println("Vector4 = ("+x+","+y+","+z+","+w+")");
 	}
