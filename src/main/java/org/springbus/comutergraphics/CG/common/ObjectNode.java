@@ -61,9 +61,9 @@ public class ObjectNode extends MyObject {
 		if (node.material == null) this.material = null;
 		else this.material = new Material(node.material);
 		this.dummyMaterial = null;
-		this.next = null; // 兄弟は伝搬しない
-		this.parent = null; // 親は伝搬しない
-		// 子供はnullでなければ伝搬する
+		this.next = null; // 兄弟姐妹不传播
+		this.parent = null; // 父母不传播
+		// 子项传播，如果不为null
 		if (node.child == null) this.child = null;
 		else this.child = new ObjectNode(node.child);
 	}
@@ -96,7 +96,7 @@ public class ObjectNode extends MyObject {
 		return false;
 	}
 
-	// 形状ノードかどうかのチェック
+	// 检查形状节点
 	public boolean isShapeNode(){
 		if (element instanceof Sphere ||
 		    element instanceof TriangleSet ||
@@ -238,12 +238,12 @@ public class ObjectNode extends MyObject {
 		return name;
 	}
 
-	// ノードの変換行列のリセット
+	//重置节点的转换矩阵
 	public void reset(){
 		mat.identity();
 	}
 
-	// ノードの平行移動
+	// 翻译节点
 	public void translate(Vertex3 v){
 		mat.a[3] += v.x;
 		mat.a[7] += v.y;
@@ -255,7 +255,7 @@ public class ObjectNode extends MyObject {
 		mat.a[11] += z;
 	}
 
-	// ノードの拡大縮小
+	// 节点缩放
 	public void scale(Vector3 v){
 		mat.a[0] *= v.x;
 		mat.a[5] *= v.y;
@@ -267,7 +267,7 @@ public class ObjectNode extends MyObject {
 		mat.a[10] *= z;
 	}
 
-	// ノードの回転
+	// 节点旋转
 	public void rotate(Vector3 axis, double theta){
 		Matrix4 m = new Matrix4();
 		Matrix4 m2 = m.rotate(axis, theta);
@@ -281,7 +281,7 @@ public class ObjectNode extends MyObject {
 		rotate(v.x,v.y,v.z,v.w);
 	}
 
-	// Material（材質データ）ノードをセット
+	// 设置材料节点
 	public void setMaterial(Material material){
 		if (material == null) throw new NullPointerException();
 		this.material = material;
@@ -294,7 +294,7 @@ public class ObjectNode extends MyObject {
 		return dummyMaterial;
 	}
 
-	// 累積行列を使ってローカル座標値を世界座標値に変換
+	// 用累积矩阵将局部坐标转换为世界坐标
 	public Vertex3 getWorldPosition(Vertex3 v){
 		if (v == null) throw new NullPointerException();
 		Vertex4 p = new Vertex4(v.x,v.y,v.z,1.0);
@@ -307,7 +307,7 @@ public class ObjectNode extends MyObject {
 		return getWorldPosition(v);
 	}
 
-	// 累積行列を使ってローカルベクトル値を世界ベクトル値に変換
+	// 使用累积矩阵将局部向量值转换为世界向量值
 	public Vector3 getWorldVector(Vector3 v){
 		if (v == null) throw new NullPointerException();
 		if (this.acm == null) throw new NullPointerException();
@@ -322,8 +322,8 @@ public class ObjectNode extends MyObject {
 		return getWorldVector(v);
 	}
 
-	// 累積行列を使ってローカルな法線ベクトル値を世界法線ベクトル値に変換
-	// 法線ベクトルの場合、累積行列の転置行列の逆行列を使う！
+	//使用累积矩阵将局部法线向量值转换为世界法线向量值
+	//对于法线向量，请使用累积矩阵转置的逆！
 	public Vector3 getWorldNormal(Vector3 v){
 		if (v == null) throw new NullPointerException();
 		Matrix4 m = null;
@@ -341,7 +341,7 @@ public class ObjectNode extends MyObject {
 		return getWorldNormal(v);
 	}
 
-	// 累積行列の逆行列を使って世界座標値をローカルな座標値に変換
+	// 使用累积矩阵逆将世界坐标转换为局部坐标
 	public Vertex3 getLocalPosition(Vertex3 v){
 		if (v == null) throw new NullPointerException();
 		if (this.inv == null) throw new NullPointerException();
@@ -355,8 +355,8 @@ public class ObjectNode extends MyObject {
 		return getLocalPosition(v);
 	}
 
-	// 累積行列の逆行列を使って世界座標でのベクトルをローカルな座標系
-	// でのベクトルに変換
+	// 使用局部坐标系中累积矩阵逆的世界坐标中的向量
+	// 转换为矢量
 	public Vector3 getLocalVector(Vector3 v){
 		if (v == null) throw new NullPointerException();
 		if (this.inv == null) throw new NullPointerException();

@@ -6,33 +6,33 @@ package org.springbus.comutergraphics.CG.common;
 
 public class Ray extends MyObject {
 
-	double t = HUGEREAL; // 視点から物体の交点までの距離
-	ObjectNode hitNode; // 交差した形状ノード
-	int hitIndex;//三角形のインデックスフェイスセットの場合のインデックス
-	Vertex3 intersection; // 交点の世界座標
-	Vertex3 intersectionLocal; // 交点のローカル座標
-	Vector3 intersectionNormal; // 交点の法線ベクトル
-	Vector3 intersectionU; // 交点のU方向の偏微分ベクトル
-	Vector3 intersectionV; // 交点のV方向の偏微分ベクトル
-	Color3 intersectionColor;//頂点カラーのある三角形の色保持
-	double  u, v; // 交点における物体のローカル座標系でのテクスチャー座標値
-	double  opacity; // 交点における物体にアルファテクスチャーがある場合に値(1.0: 完全不透明, 0.0:完全透明)
-	boolean isNormal = false;//三角形インデックスセットの頂点法線ベクトルフラグ
-	boolean isTexture = false;//三角形インデックスセットの頂点テクスチャーフラグ
-	boolean isColor = false;//三角形インデックスセットの頂点カラーフラグ
-	int level = 0;//レイの深さレベル
-	boolean lightRay = false; // 視線のレイか交点から光源に向かうレイか
-	Ray reflectedRay = null;//反射レイ
-	Ray transparentRay = null;//透過レイ
-	public ObjectWorld objectWorld= null;//世界データ
-	double refraction = 1.0; // 現在のレイのいる空間の屈折率
-	public Color3 color = null;//レイのインテンシティ保持用
-	public Vertex3 origin = null;  // レイの始点
-	public Vector3 direction = null; // レイの単位方向ベクトル
-	int currentImageX, currentImageY; // デバッグ用
+	double t = HUGEREAL; // 视点到物体相交的距离
+	ObjectNode hitNode; // 相交的形状节点
+	int hitIndex;//三角形索引人脸索引
+	Vertex3 intersection; // 相交世界坐标
+	Vertex3 intersectionLocal; // 相交的局部坐标
+	Vector3 intersectionNormal; // 相交法线向量
+	Vector3 intersectionU; // 交U方向上点的偏微分向量
+	Vector3 intersectionV; // 交点V方向上的偏微分向量
+	Color3 intersectionColor;//为具有顶点颜色的三角形保留颜色
+	double  u, v; // 相交对象的局部坐标系中的纹理坐标值
+	double  opacity; // 相交处的对象具有alpha纹理时的值（1.0：完全不透明，0.0：完全透明）
+	boolean isNormal = false;//三角形索引集的顶点法向矢量标志
+	boolean isTexture = false;//三角形索引集的顶点纹理标志
+	boolean isColor = false;//三角形索引集的顶点颜色标志
+	int level = 0;//射线深度等级
+	boolean lightRay = false; // 视线射线或从交叉点到光源的射线
+	Ray reflectedRay = null;//反射射线
+	Ray transparentRay = null;//透明射线
+	public ObjectWorld objectWorld= null;//世界数据
+	double refraction = 1.0; // 当前射线空间的折射率
+	public Color3 color = null;//用于保持射线强度
+	public Vertex3 origin = null;  // 射线的起点
+	public Vector3 direction = null; //射线单位方向向量
+	int currentImageX, currentImageY; // 用于调试
 	private final static int MAXRAYLEVEL = 4;
 
-	// コンストラクタ
+	// 构造函数
 	public Ray(){
 		this(null,null,0,0);
 	}
@@ -57,7 +57,7 @@ public class Ray extends MyObject {
 		this.currentImageX = i;
 		this.currentImageY = j;
 	}
-	public Ray(Ray ray, Vector3 direction){//コピー用のコンストラクタ
+	public Ray(Ray ray, Vector3 direction){//复制构造函数
 		this.t = HUGEREAL;
 		this.hitNode = null;
 		this.hitIndex = -1;
@@ -70,8 +70,8 @@ public class Ray extends MyObject {
 		this.transparentRay = null;
 		this.objectWorld = ray.objectWorld;
 		this.origin = new Vertex3(ray.intersection);
-		// レイの始点を現在の当店位置よりちょっと進める
-		// これは，同一交点の重複を防ぐため
+		//将射线的起点从当前存储位置稍微向前移动
+		//这是为了防止交叉点重复
 		this.origin.add(
 			direction.x*LITTLE,
 			direction.y*LITTLE,
@@ -86,19 +86,19 @@ public class Ray extends MyObject {
 		this.currentImageY = ray.currentImageY;
 	}
 
-	// より近い交点を探索
+	// 查找更近的交点
 	public void getNearerIntersection(ObjectNode node){
 		node.element.getNearerIntersection(this, node);
 	}
 
-	// 交わったオブジェクトのデータ設定（交点における法線ベクトルなど）
+	// 相交对象的数据设置（相交处的法向矢量等）
 	public void setNearestIntersection(){
 		Object3d element = this.hitNode.element;
 		element.setNearestIntersection(this);
 	}
 
-	// シェーディング計算
-	// 以下のシェーディングモデルで輝度を計算
+	//阴影计算
+	//使用以下阴影模型计算亮度
 	// I = M(emisssive) + (1-M(transparency))*Im +
 	//	M(transparency)*It
 	//
@@ -108,9 +108,9 @@ public class Ray extends MyObject {
 	//	M(reflection) * (reflected ray color)
 	//
 	// Irgb = color of i-th light source
-	// 注：VRMLではAi = Iambient(i)*M(ambient)*M(diffuse)
-	//	   でかつM(ambient)は3原色でなく，スカラー値です。
-	//     ここでの環境光成分の実装はOpenGLに近いモデルです。
+	//注意：VRML中的Ai = Iambient（i）* M（ambient）* M（diffuse）
+	//并且M（ambient）是一个标量值，而不是三个原色。
+	//这里的环境光组件的实现是类似于OpenGL的模型。
 	// Ai = Iambient(i)*M(ambient)
 	// Di = Ii * M(diffuse) * Lambertian(i)
 	// Si = Ii * M(specular) * TorranceSparrow(i)
@@ -120,9 +120,9 @@ public class Ray extends MyObject {
 	public void shading(){
 		Material m = this.hitNode.dummyMaterial;
 		if (m == null) throw new NullPointerException();
-		Color3 c = this.color; // 変数cでレイのカラーを参照
+		Color3 c = this.color; // 参考变量c中的射线颜色
 		c.add(m.emissiveColor);
-		if (Math.abs(m.transparency-1)>EPSILON){ // 完全透明でない
+		if (Math.abs(m.transparency-1)>EPSILON){ // 不完全透明
 			Color3 cm = materialIntensity();
 			if (m.texture == null)
 				cm.scale(1-m.transparency);
@@ -132,7 +132,7 @@ public class Ray extends MyObject {
 		}
 		if (Math.abs(m.transparency)>EPSILON ||
 			(m.texture != null && Math.abs(this.opacity-1)>EPSILON)){
-			// 透明度がある
+			// 有透明度
 			Color3 ct = transmittedIntensity();
 			if (m.texture == null)
 				ct.scale(m.transparency);
@@ -142,15 +142,15 @@ public class Ray extends MyObject {
 		}
 	}
 
-	// ランバシアン（拡散反射光成分）の計算
+	// Lambassian（漫反射分量）计算
 	public double Lambertian(Vector3 light, Vector3 normal){
 		double t = Vector3.innerProduct(light,normal);
 		if (t < 0) t = 0;
 		return t;
 	}
 
-	// ローカルな鏡面反射光成分の計算
-	// Torrance & Sparrowのモデルに基づく
+	//局部镜面反射分量计算
+	//基于Torrance和Sparrow模型
 	public double TorranceSparrow(Vector3 light, Vector3 normal,
                                   Vector3 eye){
 		Vector3 h = new Vector3(
@@ -166,7 +166,7 @@ public class Ray extends MyObject {
 		return t;
 	}
 
-	// テクスチャーの不透明度値の取得
+	// 获取纹理不透明度值
 	public double getTexelOpacity(int i, int j){
 		Material m = this.hitNode.dummyMaterial;
 		Texture t = m.texture;
@@ -176,7 +176,7 @@ public class Ray extends MyObject {
 		return opacity;
 	}
 
-	// テクスチャーの3原色成分の取得
+	// 获取纹理的三个原色分量
 	public Color3 getTexelColor(int i, int j){
 		Material m = this.hitNode.dummyMaterial;
 		Texture t = m.texture;
@@ -192,7 +192,7 @@ public class Ray extends MyObject {
 		return c;
 	}
 
-	// テクスチャーの色値の計算
+	// 计算纹理颜色值
 	public Color3 textureColor(){
 		Color3 c = new Color3(0,0,0);
 		Material m = this.hitNode.dummyMaterial;
@@ -218,7 +218,7 @@ public class Ray extends MyObject {
 				v -= Math.floor(v);
 		}
 
-		// 双線形補間
+		// 双线性插值
 		if (m.texture.linearFilter){
 
 			int iu = (int)Math.floor(u*m.texture.width);
@@ -247,7 +247,7 @@ public class Ray extends MyObject {
 			value01.scale(rv);
 			value00.add(value01);
 
-			// アルファ値（不透明度）の計算
+			// 计算Alpha值（不透明度）
 			double val00 = getTexelOpacity(iu,iv);
 			double val10 = getTexelOpacity(iuu,iv);
 			double val01 = getTexelOpacity(iu,ivv);
@@ -259,7 +259,7 @@ public class Ray extends MyObject {
 
 			return value00;
 		}
-		else {//もっとも近傍の１画素だけをとってくる
+		else {//仅获取最近的像素
 			int iu = (int)Math.floor(u*m.texture.width);
 			iu %= m.texture.width;
 			int iv = (int)Math.floor(v*m.texture.height);
@@ -271,7 +271,7 @@ public class Ray extends MyObject {
 		}
 	}
 
-	// ローカルな輝度値成分の計算
+	// 计算局部亮度值分量
 	// Ai(ambient) + Di(diffuse) + Si(specular)
 	public Color3 localLighting(Vector3 direction,
                                 double ambientIntensity, double intensity){
@@ -279,30 +279,30 @@ public class Ray extends MyObject {
 		Color3 ambient = new Color3(m.ambientColor);
 		ambient.scale(ambientIntensity);
 		Color3 diffuse;
-		// テクスチャーがあるかどうかのチェック
+		// 检查纹理是否存在
 		if (m.texture == null)
 			diffuse = new Color3(m.diffuseColor);
 		else
 			diffuse = textureColor();
 
-		// ランバシアン（拡散反射光成分）の計算
+		// Lambassian（漫反射分量）计算
 		double s = Lambertian(direction,this.intersectionNormal);
 		diffuse.scale(intensity*s);
 
-		// ローカルな鏡面反射光成分の計算
+		// 局部镜面反射分量的计算
 		Color3 specular = new Color3(m.specularColor);
 		double t = TorranceSparrow(direction,
 				this.intersectionNormal,this.direction);
 		specular.scale(intensity*t);
 
-		// 環境光成分の加算
+		// 添加环境光组件
 		ambient.add(diffuse);
 		ambient.add(specular);
 		return ambient;
 	}
 
-	// 光源の寄与を加味した輝度値の計算
-	// 点光源の場合は，付影処理もする。
+	//计算亮度值，要考虑到光源的贡献
+	//在点光源的情况下，还会执行阴影处理。
 	public Color3 lightIntensity(ObjectNode lightNode){
 		Color3 c = new Color3(0,0,0);
 		double shadowAttenuation=1.0;
@@ -320,16 +320,16 @@ public class Ray extends MyObject {
 				lightWorldPosition.y-this.intersection.y,
 				lightWorldPosition.z-this.intersection.z);
 			direction.normalize();
-			// 光線レイの定義
+			// 射线射线定义
 			Ray ray = new Ray(this,direction);
 			ray.lightRay = true;
-			ray.shoot(objectWorld.root.child);//光線レイトレーシングの開始
+			ray.shoot(objectWorld.root.child);//光线追踪开始
 			if (ray.hitNode != null &&
 				ray.t > 0 && ray.t < d) { // 影の中
 				shadowAttenuation *= SHADOW_ATTENUATION;
 			}
-			ray = null;//ガーベッジコレクション用
-			// 減衰率の計算
+			ray = null;//用于垃圾收集
+			// 衰减计算
 			double attenuation =
 					  p.attenuation.x
 					+ p.attenuation.y*d
@@ -341,7 +341,7 @@ public class Ray extends MyObject {
 			c.assign(p.color);
 			c.scale(attenuation);
 
-			// ローカルライティングの計算
+			// 局部照明计算
 			c.multiply(localLighting(direction,
 				p.ambientIntensity,
 				p.intensity));
@@ -349,10 +349,10 @@ public class Ray extends MyObject {
 		}
 		else if (lightNode.element instanceof DirectionalLight){
 			DirectionalLight p = (DirectionalLight)lightNode.element;
-			if (!p.on) return c; // スイッチがついていない
+			if (!p.on) return c; // 没有开关
 			Vector3 direction = lightNode.getWorldVector(p.direction);
 			direction.scale(-1);
-			// 平行光源は影を作らず減衰しないと仮定
+			// 假设平行光源不会投射阴影并且不会衰减
 			c.assign(p.color);
 			c.multiply(localLighting(direction,
 				p.ambientIntensity, p.intensity));
@@ -360,9 +360,9 @@ public class Ray extends MyObject {
 		return c;
 	}
 
-	// ローカルな輝度計算
-	// 光源はレイと交差した形状ノードのシーングラフ上での兄弟か
-	// 親ノードを探す
+	//局部亮度计算
+	//光源是与射线相交的形状节点的场景图上的同级对象吗？
+	//找到父节点
 	public Color3 localIntensity(){
 		ObjectNode parent = this.hitNode.parent;
 		Color3 c = new Color3(0,0,0);//黒
@@ -383,9 +383,9 @@ public class Ray extends MyObject {
 		return c;
 	}
 
-	// 材質に基づく輝度計算
+	// 基于材质的亮度计算
 	public Color3 materialIntensity(){
-		// 先にローカルな反射による輝度を計算する。
+		// 首先，计算由于局部反射引起的亮度。
 		Material m = this.hitNode.dummyMaterial;
 		Color3 c = localIntensity();
 		if (Math.abs(m.reflection) > EPSILON){
@@ -396,33 +396,33 @@ public class Ray extends MyObject {
 		return c;
 	}
 
-	// グローバルな反射光成分の計算
-	public Color3 reflectedIntensity(){//反射レイの輝度
+	// 计算整体反射光分量
+	public Color3 reflectedIntensity(){//反射光线的亮度
 		if (this.level > MAXRAYLEVEL) return new Color3();
 		Vector3 direction = ReflectedDirection();
-		// 反射レイの定義
+		// 反射光线的定义
 		Ray ray = new Ray(this,direction);
 		this.reflectedRay = ray;
-		ray.shoot(objectWorld.root.child);//反射レイトレーシングの開始
+		ray.shoot(objectWorld.root.child);//开始反射光线追踪
 		Color3 c = new Color3(ray.color);
 		ray = null;
 		return c;
 	}
 
-	// グローバルな透過光成分の計算
-	public Color3 transmittedIntensity(){//透過レイの輝度
+	// 整体透射光分量计算
+	public Color3 transmittedIntensity(){//透明射线的亮度
 		if (this.level >MAXRAYLEVEL) return new Color3();
 		Vector3 direction = RefractedDirection();
-		// 透過レイの定義
+		// 透明射线的定义
 		Ray ray = new Ray(this,direction);
 		this.transparentRay = ray;
-		ray.shoot(objectWorld.root.child);//透過レイトレーシングの開始
+		ray.shoot(objectWorld.root.child);//开始透明光线追踪
 		Color3 c = new Color3(ray.color);
 		ray = null;
 		return c;
 	}
 
-	// レイの交点上での視線に対する反射方向のベクトルの計算
+	// 计算射线相交处视线的反射方向向量
 	public Vector3 ReflectedDirection(){
 		Vector3 v = new Vector3(this.intersectionNormal);
 		double t = v.innerProduct(this.direction);
@@ -432,12 +432,12 @@ public class Ray extends MyObject {
 		return v;
 	}
 
-	// スネル（Snell）の法則で屈折方向のベクトルを計算する
-	// Snell's law: eta1 * sin(theta1) = eta2 * sin(theta2)
+	// 使用斯涅尔定律计算折射方向上的向量
+	// 斯涅尔定律：eta1 * sin（theta1）= eta2 * sin（theta2）
 	public Vector3 RefractedDirection(){
 		Material m = this.hitNode.dummyMaterial;
 		if (Math.abs(m.refraction) < EPSILON)
-			throw new InternalError("屈折率が0になっています。");
+			throw new InternalError("折射率为0。");
 		double s1,c1; // s1 = sin'theta1), c1 = cos(theta1)
 		double s2,c2; // s2 = sin(theta2), c2 = cos(theta2)
 		double eta = this.refraction / m.refraction;
@@ -470,31 +470,31 @@ public class Ray extends MyObject {
 		return direction;
 	}
 
-	// レイトレーシング本体
+	//射线追踪体
 	public void shoot(ObjectNode node){
 		// find nearest object;
 		start(node);
-		if (this.t > LARGE // 遠すぎる
-			|| Math.abs(t)<EPSILON // 同一点での交差を避ける
-		    || this.hitNode == null) { // 交点なし
+		if (this.t > LARGE // 太远
+			|| Math.abs(t)<EPSILON // 避免在同一点交叉
+		    || this.hitNode == null) { // 无路口
 			this.color.r = this.objectWorld.background.r;
 			this.color.g = this.objectWorld.background.g;
 			this.color.b = this.objectWorld.background.b;
 		}
-		else { // 交点あり
+		else { // 有一个路口
 			if (this.lightRay) return;
 			setNearestIntersection();
 			shading();
 		}
 	}
 
-	// シーングラフの再帰的なレイと物体との交点計算
-	public void start(ObjectNode node){//再帰的な交点計算
+	// 场景图与对象交点的递归射线计算
+	public void start(ObjectNode node){//递归相交计算
 		if (node == null) return;
-		if (node.isShapeNode()){//形状ノードの場合
+		if (node.isShapeNode()){//对于形状节点
 			getNearerIntersection(node);
 		}
-		start(node.next);//兄弟ノードで交点計算
-		start(node.child);//子供ノードで交点計算
+		start(node.next);//同级节点的相交计算
+		start(node.child);//子节点的交点计算
 	}
 }

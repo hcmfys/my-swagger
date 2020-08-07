@@ -85,7 +85,7 @@ public class ObjectWorld extends MyObject {
 				node.parent.dummyMaterial);
 	}
 
-	// 世界の線画表示
+	//世界线图显示
 	public void drawWorld(){
 		if (root == null) return;
 		Camera c = activeCamera;
@@ -93,9 +93,9 @@ public class ObjectWorld extends MyObject {
 			c = activeCamera = new Camera();
 			this.addCamera(c,"DEFAULT_CAMERA");
 		}
-		// シーングラフの前処理
+		// 场景图预处理
 		accumulateWorldMatrix();
-		//シーングラフの線画表示
+		//场景图线图显示
 		draw(c,root.child);
 	}
 
@@ -111,79 +111,79 @@ public class ObjectWorld extends MyObject {
 
 	// 射线迹
 	public Camera setupRaytrace(){
-		// 世界にオブジェクトがなければなにもしない
+		// 如果世界上没有物体，那就什么都不做
 		if (root == null) return null;
-		// アクティブなカメラの設定
+		// 有效的相机设置
 		Camera c = activeCamera;
 		if (c == null){
 			c = activeCamera = new Camera();
 			this.addCamera(c,"DEFAULT_CAMERA");
 		}
-		// 画像メモリのアロケーション
+		// 图像内存分配
 		pixel = new int[c.resHorizontal * c.resVertical];
-		// シーングラフの前処理
+		// 场景图预处理
 		accumulateWorldMatrix();
 		return c;
 	}
 
-	// シェーディング結果の画素値の取得と設定
+	// 获取并设置阴影结果的像素值
 	public int[] getPixel(){ return pixel; }
 	public void setPixel(int index, int value){ pixel[index] = value;}
 
-	// レイトレーシング開始メソッド
+	// 光线追踪开始方法
 	public void startRaytrace(){
 		Camera c = setupRaytrace();//前処理
 		if (c == null) return;
 
-		// カメラの初期設定
-		Vertex3 camOrigin = new Vertex3(0,0,0);//カメラの始点は原点
-		Vertex3 origin = c.getWorldPosition(camOrigin);//始点を世界座標に変換
-		double currentX = c.screenMinX;//スクリーンの左端
-		double currentY = c.screenMaxY;//スクリーンの上端
-		// レイトレーシングの開始スクリーン位置の設定
+		// 相机初始设定
+		Vertex3 camOrigin = new Vertex3(0,0,0);//相机的起点是原点
+		Vertex3 origin = c.getWorldPosition(camOrigin);//将起点转换为世界坐标
+		double currentX = c.screenMinX;//屏幕左边缘
+		double currentY = c.screenMaxY;//屏幕上方
+		//设置光线追踪的起始屏幕位置
 		Vertex3 camScreen = new Vertex3(currentX,currentY,-c.focalLength);
-		// 開始位置を世界座標に変換
+		// 将起始位置转换为世界坐标
 		Vertex3 screen = c.getWorldPosition(camScreen);
-		Vector3 direction = new Vector3();//レイの方向ベクトル
-		int r,g,b;//シェーディング結果の色値の保持
+		Vector3 direction = new Vector3();//射线方向矢量
+		int r,g,b;//保留着色结果的颜色值
 
-		for (int j = 0; j < c.resVertical ; j++ ){//スクリーンの縦方向
+		for (int j = 0; j < c.resVertical ; j++ ){//屏幕垂直方向
 
-			for (int i = 0; i < c.resHorizontal ; i++ ){//スクリーンの横方向
+			for (int i = 0; i < c.resHorizontal ; i++ ){//屏幕水平方向
 
-				// レイの方向ベクトルの設定
+				// 射线方向矢量集
 				direction.assign(screen);
 				direction.subtract(origin);
 				direction.normalize();//正規化
-				// レイオブジェクトの生成
+				// 射线对象生成
 				Ray ray = new Ray(screen,direction,i,j);
-				ray.objectWorld = this;//ObjectWorldオブジェクトの保持
-				ray.shoot(root.child);//レイトレーシング開始！
+				ray.objectWorld = this;//持有ObjectWorld对象
+				ray.shoot(root.child);//光线追踪开始了！
 
-				int color = 0xff000000;//色のアルファ値は不透明で初期化
-				ray.color.clamp();//シェーディング結果の色値を正規化[0-1]
-				r = (int) ((double)COLORLEVEL*ray.color.r);//赤色成分
+				int color = 0xff000000;//颜色Alpha值不透明并已初始化
+				ray.color.clamp();//标准化阴影结果颜色值[0-1]
+				r = (int) ((double)COLORLEVEL*ray.color.r);//红色成分
 				g = (int) ((double)COLORLEVEL*ray.color.g);//緑色成分
 				b = (int) ((double)COLORLEVEL*ray.color.b);//青色成分
-				color = color |(r << 16)|(g << 8)|b;//3原色をひとつにまとめる
-				pixel[j*c.resHorizontal+i] = color;//色値を画素配列にコピー
+				color = color |(r << 16)|(g << 8)|b;//3种原色组合1种
+				pixel[j*c.resHorizontal+i] = color;//将颜色值复制到像素数组
 
-				currentX += c.deltaHorizontal;//横方向を横デルタ幅だけ増やす
+				currentX += c.deltaHorizontal;//通过宽度增量宽度增加宽度
 				camScreen.x = currentX;
 				camScreen.y = currentY;
-				camScreen.z = -c.focalLength;//Z値は常に焦点距離だけ負の位置
-				screen = c.getWorldPosition(camScreen);//スクリーン位置の再設定
+				camScreen.z = -c.focalLength;//Z距离对焦距离
+				screen = c.getWorldPosition(camScreen);//重置屏幕位置
 			}
 			currentX = c.screenMinX;
-			currentY -= c.deltaVertical;//縦方向を縦デルタ幅だけ減らす
+			currentY -= c.deltaVertical;//减少垂直方向的垂直增量宽度
 			camScreen.x = currentX;
 			camScreen.y = currentY;
-			camScreen.z = -c.focalLength;//Z値は常に焦点距離だけ負の位置
-			screen = c.getWorldPosition(camScreen);//スクリーン位置の再設定
+			camScreen.z = -c.focalLength;//Z值在焦距上始终为负
+			screen = c.getWorldPosition(camScreen);//重置屏幕位置
 		}
 	}
 
-	// レイトレース結果の画像をゲット
+	// 获取光线跟踪结果的图像
 	public Image getRaytracedImage(Component component){
 		if (activeCamera == null) return null;
 		int width = activeCamera.resHorizontal;
