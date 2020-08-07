@@ -1,37 +1,30 @@
-package org.springbus.comutergraphics.CG.common;// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+package org.springbus.comutergraphics.CG.common;
 
-// Cone.java　（円すいの定義）
-// 円すいのクラス
-//	プログラム３−８
-//		Coneクラスのコンストラクタ
+// Cone.java（锥体定义）
+//圆锥形
+//程序3-8
+//锥体类构造函数
 
 public class Cone extends Object3d {
 
 	// F = x*x+z*z-r*r*(1/2-y/h)*(1/2-y/h) = 0 */
-	double r; // 円すいの底面の半径　(r>0)
-	double h; // 円すいの高さ (h>0)
-	BoundingBox bbox;//バウンディングボックス
-	int numUTessellate;//U方向のテッサレーション
-	int numVTessellate;//V方向のテッサレーション
+	double r; // 圆锥底部的半径（r> 0）
+	double h; // 圆锥高度（h> 0）
+	BoundingBox bbox;//边界框
+	int numUTessellate;//U方向上的镶嵌）
+	int numVTessellate;//V方向细分
 
-	// コンストラクタ
+	// 构造函数
 	public Cone(double r, double h){
 		if (r <= 0 || h <= 0)
-			throw new InternalError("円すいのパラメータエラー");
+			throw new InternalError("锥形参数错误");
 		this.r = r;
 		this.h = h;
 		this.numUTessellate = 30;
 		this.numVTessellate = 4;
-		Vertex3 center;//バウンディングボックスの中央の位置
-		double xsize, ysize, zsize;//バウンディングボックスのサイズ
-		//バウンディングボックスのセット
+		Vertex3 center;//边界框的中心位置
+		double xsize, ysize, zsize;//边框尺寸
+		//边框套
 		center = new Vertex3();
 		center.x = center.y = center.z = 0;
 		xsize = zsize = 2*r*(1+DELTA);
@@ -39,8 +32,8 @@ public class Cone extends Object3d {
 		this.bbox = new BoundingBox(center,xsize,ysize,zsize);
 	}
 	public Cone(){
-		// デフォルトの円すいの底面の半径は1.0
-		// 高さは2.0
+		//默认圆锥体底部的半径为1.0
+		//高度为2.0
 		this(1.0,2.0);
 	}
 
@@ -49,23 +42,23 @@ public class Cone extends Object3d {
 		System.out.println("Cone: radius = "+r+" height = "+h);
 	}
 
-	//テッサレーションの設定
+	//镶嵌设置
 	public void setTessellate(int unum, int vnum){
 		if (unum <= 0 || vnum <= 0)
-			throw new InternalError("テッサレーション数は正でなければなりません");
+			throw new InternalError("镶嵌数必须为正");
 		numUTessellate = unum;
 		numVTessellate = vnum;
 	}
 
-	// 円すいの高さ方向での範囲チェック（レイトレーシングで利用）
-	public boolean isWithinConeHeight(double oy, double dy, 
+	// 沿锥体高度方向进行范围检查（用于射线追踪）
+	public boolean isWithinConeHeight(double oy, double dy,
 		double t){
 		double y = oy + t * dy;
 		if (-h/2 <= y && y < h/2) return true;
 		return false;
 	}
 
-	// レイと円すいの交点計算
+	// 射线锥的交点的计算
 	public void  getNearerIntersection(Ray ray, ObjectNode p){
 		if (ray == null || p == null)
 			throw new NullPointerException();
@@ -74,11 +67,11 @@ public class Cone extends Object3d {
 		Vertex3 o = p.getLocalPosition(ray.origin);
 		Vector3 d = p.getLocalVector(ray.direction);
 
-		//レイとバウンディングボックスとの交点計算
+		//射线与边界框之间的相交计算
 		if (!bbox.isHit(o,d)) return;
 
-		// レイと円すいの交点計算
-		// まず底面との交点計算
+		//计算射线与圆锥的交点
+		//首先，计算与底部的交点
 		// o.y+t*d.y = -h/2
 		double t=HUGE, t1, x, z;
 		if (Math.abs(d.y)>EPSILON){
@@ -90,21 +83,21 @@ public class Cone extends Object3d {
 		}
 
 		// (o.x+t*d.x)^2 + (o.z+t*d.z)^2 = (r*(1/2-(o.y+t*d.y)/h))^2
-		// これを　a * t^2 + b * t + c = 0　としよう。
-		// ２次方程式の解の公式を使う。
+		// 我们称其为a * t ^ 2 + b * t + c = 0。
+		//使用二次解公式。
 		double a,b,c,det,t2,q;
 		q = (r/h)*(r/h);
 		a = d.x * d.x + d.z * d.z - q * (d.y * d.y);
 		b = 2 * (o.x * d.x + o.z * d.z)
 		  - q * d.y * (2 * o.y - h);
-		c = o.x * o.x + o.z * o.z 
+		c = o.x * o.x + o.z * o.z
 		  - q * (0.5 * h - o.y)*(0.5 * h - o.y);
 		det = b * b - 4.0 * a * c;
 		if (det < 0.0 || Math.abs(a)<EPSILON) return;
 		det = Math.sqrt(det);
-		if (Math.abs(det)<EPSILON){ // 解はひとつ
+		if (Math.abs(det)<EPSILON){ // 一种解决方案
 			t1 = (-b) / (2.0 * a);
-			if (t1 < t && 
+			if (t1 < t &&
 				isWithinConeHeight(o.y,d.y,t1))
 				t = t1;
 		}
@@ -112,13 +105,13 @@ public class Cone extends Object3d {
 			t1 = (-b - det) / (2.0 * a);
 			if (Math.abs(t1)>EPSILON && t1 > 0.0) {
 				if (t1 < t &&
-					isWithinConeHeight(o.y,d.y,t1)) 
+					isWithinConeHeight(o.y,d.y,t1))
 					t = t1;
 			}
 			else {
 				t2 = (-b + det) / (2.0 * a);
 				if (t2 < 0.0 || Math.abs(t2)<EPSILON){
-					if (t > LARGE) 
+					if (t > LARGE)
 					return;
 				}
 				if (t2 < t &&
@@ -139,22 +132,22 @@ public class Cone extends Object3d {
 			ray.intersection = worldSolution;
 			ray.intersectionLocal = localSolution;
 			return;
-		}	
+		}
 		return;
 	}
 
-	// 円すいとレイの交点での法線ベクトルなどの計算
+	// 锥与射线相交处的法向矢量的计算
 	public void setNearestIntersection(Ray ray){
 		boolean isBottomCap = false;
 		double x = ray.intersectionLocal.x;
 		double y = ray.intersectionLocal.y;
 		double z = ray.intersectionLocal.z;
 		Vector3 localNormal;
-		if (Math.abs(y) < EPSILON){ // 円すいの底面と交差
+		if (Math.abs(y) < EPSILON){ // 越过锥底
 			localNormal = new Vector3(0,-1,0);
 			isBottomCap = true;
 		}
-		else {// 円すいの側面と交差
+		else {// 穿过圆锥的侧面
 			localNormal = new Vector3(x,(r/h)*(r/h)*(h/2-y),z);
 		}
 		localNormal.normalize();
@@ -170,18 +163,18 @@ public class Cone extends Object3d {
 			return;
 		}
 
-		// 円すいのテクスチャー座標計算
+		// 锥体纹理计算
 		double u,v;
 		if (isBottomCap){
 			u = (x+r)/(2*r);
 			v = (z+r)/(2*r);
 		}
 		else {
-			// ローカルな円すいのパラメトリックな表現
+			// 局部圆锥体的参数表示
 			// x = -r * (1-2y/h) * sin(theta)
 			// y = t * h
 			// z = -r * (1-2y/h) * cos(theta)
-			// 0 <= t <= 1 
+			// 0 <= t <= 1
 			double t = (y + h/2) / h;
 			// 0 <= theta <= 2*PI  注: atan2=>[-PI,PI]
 			double theta = Math.PI + Math.atan2(x,z);
@@ -194,13 +187,13 @@ public class Cone extends Object3d {
 		ray.v = s.y;
 	}
 
-	// 円すいの線画
+	//圆锥线图
 	public void draw(Camera c, ObjectNode node){
 		if (!(node.element instanceof Cone)) return;
-		// 円すいのテッサレーションをしながら線分に対して細かなクリッピング
+		// 细化圆锥体时对线段进行精细修剪
 		drawCone(c,node,numUTessellate,numVTessellate);
 	}
-	// 円すい上の座標値を得る
+	// 获取圆锥上的坐标值
 	public Vertex3 getConeCoord(double r, double h, double u0, double v0){
 		double u = 2.0 * Math.PI * u0;
 		double v = h * (v0 - 0.5);
@@ -222,7 +215,7 @@ public class Cone extends Object3d {
 		double dv = 1.0;
 		double ustep = du / lx;
 		double vstep = dv / ly;
-		//頂点を出力
+		//输出顶点
 		int numVertex = lx*(ly+1)+2;
 		Vertex3[] vtx = new Vertex3[numVertex];//頂点(apex)＋側面＋底面
 		int cnt=0;
@@ -236,7 +229,7 @@ public class Cone extends Object3d {
 		for ( i = 0, u = 0.0 ; i < lx ; i++, u += ustep )
 			vtx[cnt++] = getConeCoord(p.r,p.h,u,0.0);
 
-		//法線ベクトルを出力
+		//输出法线向量
 		Vector3[] nml = new Vector3[numVertex];
 		cnt=0;
 		nml[cnt++] = new Vector3(0,1,0);//上面
@@ -257,7 +250,7 @@ public class Cone extends Object3d {
 		for ( i = 0 ; i < lx ; i++ )
 			nml[cnt++] = new Vector3(0,-1,0);
 
-		//テクスチャー座標を出力
+		//输出纹理坐标
 		Vertex2[] tx = new Vertex2[numVertex];
 		cnt=0;
 		tx[cnt++] = new Vertex2(0.5,1.0);//上面(Xは縮退）
@@ -278,7 +271,7 @@ public class Cone extends Object3d {
 			tx[cnt] = new Vertex2(u, 0.0);
 			cnt++;
 		}
-		// インデックスの設定
+		// 索引设定
 		int numTriangle = 2*lx*(ly-1)+2*lx;
 		Index3[] ind = new Index3[numTriangle];
 		int m,n,o,r,q;
@@ -294,7 +287,7 @@ public class Cone extends Object3d {
 				ind[cnt++] = new Index3(m,q,r);
 				ind[cnt++] = new Index3(m,n,q);
 			}
-			else 
+			else
 			for ( i = 0 ; i < lx ; i++ ){
 				m = j*lx+i;
 				n = (i == lx-1) ? m-i : m+1;
@@ -309,11 +302,10 @@ public class Cone extends Object3d {
 			m = o+1+i;
 			n = (i == lx-1) ? m-i : m+1;
 			ind[cnt++] = new Index3(o,n,m);
-			
+
 		}
-		// 三角形インデックスフェイスセットに変換して描画
-		TriangleSet ts = 
-			new TriangleSet(numTriangle, ind, numVertex, vtx, nml, tx);
+		// 通过转换为三角形索引面集进行绘制
+		TriangleSet ts = new TriangleSet(numTriangle, ind, numVertex, vtx, nml, tx);
 		ts.draw(c,node);
 	}
 

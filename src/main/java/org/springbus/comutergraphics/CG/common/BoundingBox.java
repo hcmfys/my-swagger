@@ -4,10 +4,10 @@ package org.springbus.comutergraphics.CG.common;
 
 public class BoundingBox extends MyObject {
 
-	Vertex3 center;//バウンディングボックスの中央の位置
-	double xsize, ysize, zsize;//バウンディングボックスのサイズ
+	Vertex3 center;//边界框的中心位置
+	double xsize, ysize, zsize;//边界框大小
 
-	// コンストラクタ
+	// 构造函数
 	public BoundingBox(Vertex3 center,
 		double xsize, double ysize, double zsize){
 		this.center = center;
@@ -16,11 +16,11 @@ public class BoundingBox extends MyObject {
 		this.zsize = zsize;
 	}
 	public boolean isHit(Vertex3 o, Vector3 d){
-		// レイとバウンディングボックスの交点計算
+		// 射线与边界框的交点的计算
 		double t, t1, t2, x, y, z;
 		double xt, yt, zt;
 		t = HUGE;
-		// Z = center.z+zsize/2 || Z = center.x-zsize/2平面との交点計算
+		// Z = center.z+zsize/2 || Z = center.x-zsize/2 与平面相交的计算
 		if (Math.abs(d.z)>EPSILON){
 			t1 = (center.z+zsize/2-o.z)/d.z;
 			x = o.x + t1 * d.x;
@@ -41,7 +41,7 @@ public class BoundingBox extends MyObject {
 				yt*(1-yt)>=0)
 				t = t2;
 		}
-		// X = center.x+xsize/2 || X = center.x-xsize/2平面との交点計算
+		// X = center.x+xsize/2 || X = center.x-xsize/2 与平面相交的计算
 		// o.x+t*d.x = center.x+xsize/2 (or center.x-xsize/2)
 		if (Math.abs(d.x)>EPSILON){
 			t1 = (center.x+xsize/2-o.x)/d.x;
@@ -63,7 +63,7 @@ public class BoundingBox extends MyObject {
 				yt*(1-yt)>=0)
 				t = t2;
 		}
-		// Y = center.y+ysize/2 || Y = center.y-ysize/2平面との交点計算
+		// Y = center.y+ysize/2 || Y = center.y-ysize/2 与平面相交的计算
 		// o.y+t*d.y = center.y+ysize/2 (or center.y-ysize/2)
 		if (Math.abs(d.y)>EPSILON){
 			t1 = (center.y+ysize/2-o.y)/d.y;
