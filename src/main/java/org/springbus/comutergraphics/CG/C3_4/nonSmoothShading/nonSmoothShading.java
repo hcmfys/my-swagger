@@ -241,6 +241,7 @@ public class nonSmoothShading extends JApplet {
   }
 
   public static void main(String[] args) {
-    new nonSmoothShading();
+    nonSmoothShading  mm= new nonSmoothShading();
+    mm.display();
   }
 }

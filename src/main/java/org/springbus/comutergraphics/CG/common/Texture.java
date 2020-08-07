@@ -78,6 +78,10 @@ public class Texture extends Component implements Serializable, Cloneable {
 			texture = this.getToolkit().getImage(filename);
 		else
 			texture = this.applet.getImage(url,filename);
+
+		if (texture == null){
+			texture = this.applet.getImage(url);
+		}
 		if (texture == null) throw
 			new InternalError("纹理文件:"+filename+ "找不到");
 		mt.addImage(texture,1);

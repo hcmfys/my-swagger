@@ -57,6 +57,7 @@ public class sphdraw extends JApplet{
   }
 
 	public  static void  main(String[] args) {
-		new sphdraw();
+		sphdraw  mm=new sphdraw();
+		mm.display();
 	}
 }

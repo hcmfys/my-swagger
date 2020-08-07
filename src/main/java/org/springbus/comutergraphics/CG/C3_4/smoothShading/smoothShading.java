@@ -65,7 +65,7 @@ public class smoothShading extends JApplet {
 		0.29389262614623685,0.30901699437494756,0.9045084971874736,
 		0.5590169943749477,0.30901699437494756,0.7694208842938132,
 	};
-	
+
 	public void init(){
 		finished = false; isFirst = true;
 		ow = new ObjectWorld();//世界のオブジェクト生成
@@ -166,32 +166,38 @@ public class smoothShading extends JApplet {
 		paint(cg);
 	}
 
-	public void paint(Graphics g){
-		m.setGraphics(MyCanvas.OFFSCREEN_GRAPHICS);
-		m.setWindow(-screenx/2,screenx/2,-screeny/2,screeny/2);
-		m.setViewport(0,1,0.1,1);
-		if (finished){//レートレーシングが終了したら画像を描画
-			m.drawImage(rayOutImage,-screenx/2,screeny/2,
-				screenx,screeny,this);
+	public static  void main(String[] args){
+		smoothShading mm=new smoothShading();
+		mm.display();
+	}
+
+	public void paint(Graphics g) {
+		if (m != null) {
+			m.setGraphics(MyCanvas.OFFSCREEN_GRAPHICS);
+			m.setWindow(-screenx / 2, screenx / 2, -screeny / 2, screeny / 2);
+			m.setViewport(0, 1, 0.1, 1);
+			if (finished) {//レートレーシングが終了したら画像を描画
+				m.drawImage(rayOutImage, -screenx / 2, screeny / 2,
+						screenx, screeny, this);
+			} else {
+				Font f = m.MyFont(m.getFont().getName(),
+						m.getFont().getStyle(), 2.0);
+				m.setFont(f);//フォントの設定
+				m.setColor(Color.black);
+				m.drawString("計算中", -0.3, 0.0);
+			}
+			// 計算中を表す青色の進行バーの描画
+			m.setViewport(0, 1, 0, 0.1);
+			m.setColor(Color.blue);
+			m.fillRect(-screenx / 2, -screeny / 2, status, screeny / 2);
+			m.resetViewport();
+			if (isFirst && !finished) {
+				cg = g;
+				isFirst = false;
+				raytrace();
+			}
+			m.setGraphics(MyCanvas.DEFAULT_GRAPHICS);
+			m.drawImage(m.getOffScreenImage(), -screenx / 2, screeny / 2, this);
 		}
-		else {
-			Font f = m.MyFont(m.getFont().getName(),
-				m.getFont().getStyle(),2.0);
-			m.setFont(f);//フォントの設定
-			m.setColor(Color.black);
-			m.drawString("計算中",-0.3,0.0);
-		}
-		// 計算中を表す青色の進行バーの描画
-		m.setViewport(0,1,0,0.1);
-		m.setColor(Color.blue);
-		m.fillRect(-screenx/2,-screeny/2,status,screeny/2);
-		m.resetViewport();
-		if (isFirst && !finished) {
-			cg = g;
-			isFirst = false;
-			raytrace();
-		}
-		m.setGraphics(MyCanvas.DEFAULT_GRAPHICS);
-		m.drawImage(m.getOffScreenImage(),-screenx/2,screeny/2,this);
 	}
 }

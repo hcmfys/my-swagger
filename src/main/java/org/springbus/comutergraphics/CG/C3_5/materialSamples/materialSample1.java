@@ -12,6 +12,8 @@ package org.springbus.comutergraphics.CG.C3_5.materialSamples;
 // materialSample1.java （材質感のテスト用プログラム：アプレット）
 //	図３−２０
 
+import org.springbus.comutergraphics.CG.C3_2.sphdraw.sphdraw;
+import org.springbus.comutergraphics.CG.C3_4.smoothShading.smoothShading;
 import org.springbus.comutergraphics.CG.common.*;
 
 import java.awt.*;
@@ -167,33 +169,40 @@ public class materialSample1 extends JApplet {
 		paint(cg);
 	}
 
-	public void paint(Graphics g){
-		m.setGraphics(MyCanvas.OFFSCREEN_GRAPHICS);
-		m.setWindow(-screenx/2,screenx/2,-screeny/2,screeny/2);
-		m.setViewport(0,1,0.05,1);
-		if (finished){//レイトレーシングが終了したら画像を描画
-			m.drawImage(rayOutImage,-screenx/2,screeny/2,
-				screenx,screeny,this);
+	public void paint(Graphics g) {
+		if (m != null) {
+			m.setGraphics(MyCanvas.OFFSCREEN_GRAPHICS);
+			m.setWindow(-screenx / 2, screenx / 2, -screeny / 2, screeny / 2);
+			m.setViewport(0, 1, 0.05, 1);
+			if (finished) {//レイトレーシングが終了したら画像を描画
+				m.drawImage(rayOutImage, -screenx / 2, screeny / 2,
+						screenx, screeny, this);
+			} else {
+				Font f = m.MyFont(m.getFont().getName(),
+						m.getFont().getStyle(), 2.0);
+				m.setFont(f);//フォントの設定
+				m.setColor(Color.black);
+				m.drawString("計算中", -0.3, 0.0);
+			}
+			// 計算中を表す青色の進行バーの描画
+			m.setViewport(0, 1, 0, 0.05);
+			m.setColor(Color.blue);
+			m.fillRect(-screenx / 2, -screeny / 2, status, screeny / 2);
+			m.resetViewport();
+			if (isFirst && !finished) {
+				cg = g;
+				isFirst = false;
+				raytrace();
+			}
+			m.setGraphics(MyCanvas.DEFAULT_GRAPHICS);
+			m.drawImage(m.getOffScreenImage(), -screenx / 2, screeny / 2, this);
 		}
-		else {
-			Font f = m.MyFont(m.getFont().getName(),
-				m.getFont().getStyle(),2.0);
-			m.setFont(f);//フォントの設定
-			m.setColor(Color.black);
-			m.drawString("計算中",-0.3,0.0);
-		}
-		// 計算中を表す青色の進行バーの描画
-		m.setViewport(0,1,0,0.05);
-		m.setColor(Color.blue);
-		m.fillRect(-screenx/2,-screeny/2,status,screeny/2);
-		m.resetViewport();
-		if (isFirst && !finished) {
-			cg = g;
-			isFirst = false;
-			raytrace();
-		}
-		m.setGraphics(MyCanvas.DEFAULT_GRAPHICS);
-		m.drawImage(m.getOffScreenImage(),-screenx/2,screeny/2,this);
+	}
+
+
+	public static  void main(String[] args){
+		materialSample1 mm=new materialSample1();
+		mm.display();
 	}
 
 }
