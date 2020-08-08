@@ -1,12 +1,5 @@
 package org.springbus.comutergraphics.CG.C2_4.fillPolygon;
-// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+
 
 // fillPolygon.java
 // 多角形の塗りつぶし
@@ -19,6 +12,8 @@ package org.springbus.comutergraphics.CG.C2_4.fillPolygon;
 // 3章以降のVector3クラス，Vector4クラスなどと混同しないよう注意されたい。
 //	プログラム２−１３
 
+import org.springbus.comutergraphics.CG.C2_1.MultiViewport.MultiViewport;
+import org.springbus.comutergraphics.CG.common.JApplet;
 import org.springbus.comutergraphics.CG.common.MyCanvas;
 
 import java.util.*;//ベクトルクラス利用のため
@@ -27,7 +22,7 @@ import java.awt.image.*;//メモリイメージソース利用のため
 import java.awt.event.*;//マウスイベント利用のため
 import java.applet.Applet;//アプレット利用のため
 
-public class fillPolygon extends Applet 
+public class fillPolygon extends JApplet
 	implements MouseListener, MouseMotionListener {
 
 	protected MyCanvas m;	// MyCanvasクラス用のデータ
@@ -77,25 +72,28 @@ public class fillPolygon extends Applet
 		if (lines.size() > 0) lines.removeAllElements();
 	}
 
-	public void paint(Graphics g){//描画メソッド
-		if (isFirstClicked){
-			initData();
-			Font f = m.MyFont(m.getFont().getName(), Font.BOLD+Font.ITALIC, 1.5);
-			m.setFont(f);
-			m.drawString("クリックで開始",-0.5,0.2);
-			m.drawString("ダブルクリックで塗りつぶし",-0.9,-0.15);
-		}
-		m.setBackground(new Color(220,220,220));
-		m.setColor(Color.black);//前面色を黒色に設定
-		for (int i=0 ; i < lines.size() ; i++ ) {//多角形の周囲
-			Line l = (Line)lines.elementAt(i); m.drawLine(l.x1,l.y1,l.x2,l.y2);
-		}
-		if (isPolygonMode && !isFirstClicked){//ラバーバンド
-			m.drawLine(lastx,lasty,movingx,movingy);
-		}
-		if ((!isPolygonMode) && (image != null)){// 塗りつぶし
-			m.drawImage(image,leftTopx,leftTopy,this);
-		}
+  public void paint(Graphics g) { // 描画メソッド
+    if (m != null) {
+      if (isFirstClicked) {
+        initData();
+        Font f = m.MyFont(m.getFont().getName(), Font.BOLD + Font.ITALIC, 1.5);
+        m.setFont(f);
+        m.drawString("クリックで開始", -0.5, 0.2);
+        m.drawString("ダブルクリックで塗りつぶし", -0.9, -0.15);
+      }
+      m.setBackground(new Color(220, 220, 220));
+      m.setColor(Color.black); // 前面色を黒色に設定
+      for (int i = 0; i < lines.size(); i++) { // 多角形の周囲
+        Line l = (Line) lines.elementAt(i);
+        m.drawLine(l.x1, l.y1, l.x2, l.y2);
+      }
+      if (isPolygonMode && !isFirstClicked) { // ラバーバンド
+        m.drawLine(lastx, lasty, movingx, movingy);
+      }
+      if ((!isPolygonMode) && (image != null)) { // 塗りつぶし
+        m.drawImage(image, leftTopx, leftTopy, this);
+      }
+    }
 	}
 
 	// アクティブエッジリストへ入力データを登録
@@ -323,4 +321,9 @@ public class fillPolygon extends Applet
 			this.x2 = x2; this.y2 = y2;
 		}
 	}
+	public static void main(String[] args) {
+		fillPolygon m = new fillPolygon();
+		m.display();
+	}
+
 }

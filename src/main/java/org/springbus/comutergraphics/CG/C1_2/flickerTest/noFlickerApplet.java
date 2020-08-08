@@ -109,6 +109,7 @@ public class noFlickerApplet extends JApplet {
   }
 
   public static void main(String[] args) {
-    new noFlickerApplet();
+    noFlickerApplet m= new noFlickerApplet();
+    m.display();
   }
 }

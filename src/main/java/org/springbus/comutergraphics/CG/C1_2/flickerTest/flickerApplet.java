@@ -78,6 +78,7 @@ public class flickerApplet extends JApplet { //flickerAppletクラスはApplet�
 	}
 
 	public  static void  main(String[] args) {
-		new flickerApplet();
+		flickerApplet g=new flickerApplet();
+		g.display();
 	}
 }
