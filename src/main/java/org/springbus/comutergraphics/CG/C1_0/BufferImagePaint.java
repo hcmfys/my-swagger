@@ -26,7 +26,18 @@ public class BufferImagePaint extends JApplet {
     // g.setColor(Color.green);
     g.drawLine(302, 202, 300, 400);
 
-    drawArc(g, 200, 30, Color.red);
+    //drawArc(g, 200, 30, Color.red);
+
+
+    for(int i=0;i<=3600;i++){
+      int x=(int) (200 + 150 *Math.sin( i * Math.PI /180 ));
+      int y= (int) (200 + 150 *Math.cos( i * Math.PI /180 ));
+      setPixel(g, x, y, Color.PINK);
+    }
+
+    g.fillArc(200, 200, 50, 50, 0, 360);
+
+
   }
 
   public static void main(String[] args) {
