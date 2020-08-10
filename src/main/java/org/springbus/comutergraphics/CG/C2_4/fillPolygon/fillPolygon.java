@@ -2,15 +2,15 @@ package org.springbus.comutergraphics.CG.C2_4.fillPolygon;
 
 
 // fillPolygon.java
-// 多角形の塗りつぶし
-// 対話的に多角形をマウスで入力
-// この際，線のラバーバンド表示とマウスのダブルクリックを利用。
-// 塗りつぶしは，標準的なスキャンラインアルゴリズム。
-// バケット配列とアクティブエッジリストデータ構造を使う。
-// 多角形は何角形でもよい。
-// このためVectorクラス（不定数配列型クラス）を利用。
-// 3章以降のVector3クラス，Vector4クラスなどと混同しないよう注意されたい。
-//	プログラム２−１３
+//填充多边形
+//用鼠标交互式输入多边形
+//此时，使用线的橡皮筋显示并双击鼠标。
+//填充是标准的扫描线算法。
+//使用存储区数组和活动边缘列表数据结构。
+//多边形可以是任何多边形。
+//为此，请使用Vector类（非常数数组类型类）。
+//请注意不要与Vector3类，Vector4类等混淆。
+//程序2-13
 
 import org.springbus.comutergraphics.CG.C2_1.MultiViewport.MultiViewport;
 import org.springbus.comutergraphics.CG.common.JApplet;
@@ -25,80 +25,81 @@ import java.applet.Applet;//アプレット利用のため
 public class fillPolygon extends JApplet
 	implements MouseListener, MouseMotionListener {
 
-	protected MyCanvas m;	// MyCanvasクラス用のデータ
-	// スキャンライン処理用のデータ
-	protected activeEdgeListEntry[] edgeData = null;//多角形の辺データ登録
-	protected activeEdgeList[] bucket = null;//バケット配列
-	protected activeEdgeList activeHeader = null;//アクティブエッジリストのヘッダー
-	protected int numEdge = 0;//多角形の辺の数
-	// マウス関連データ
-	protected boolean isFirstClicked = true;//マウスの最初のクリック
-	protected boolean isDoubleClicked = false;//ダブルクリック用フラグ
-	protected boolean isSingleClicked = false;//シングルクリック用フラグ
-	// 描画領域
-	protected int width, height;//アプレットの横幅と縦幅
-	protected Image image = null;//メモリイメージソース用画像領域
-	protected MemoryImageSource mis = null;//メモリイメージソース
-	protected int[] pixel = null;//メモリイメージソースの配色用配列
-	protected int pixelWidth;//メモリイメージソースの横幅
-	protected int pixelHeight;//メモリイメージソースの縦幅
-	protected int xoffset;//pixelデータのウィンドウ内でのX座標のオフセット
-	protected int yoffset;//pixelデータのウィンドウ内でのY座標のオフセット
-	protected double leftTopx;//MyCanvasクラスのdrawImage()メソッドの開始点
-	protected double leftTopy;//MyCanvasクラスのdrawImage()メソッドの開始点
-	// 多角形の辺の描画用データ
-	protected double x0, y0;// 一番初めの位置
-	protected double lastx, lasty; // 直前の多角形の頂点
-	protected double movingx, movingy;//ラバーバンド用の頂点
-	protected int numPoints = 0; // 多角形の頂点数
-	protected boolean isPolygonMode = true;// 多角形の描画モード
-	protected Vector lines = new Vector(256,256);//ベクトルクラス
+	protected MyCanvas m;	// MyCanvas类的数据
+	// 扫描线处理数据
+	protected activeEdgeListEntry[] edgeData = null;//注册多边形面数据
+	protected activeEdgeList[] bucket = null;//铲斗阵列
+	protected activeEdgeList activeHeader = null;//活动边缘列表标题
+	protected int numEdge = 0;//多边形的边数
+	// 鼠标相关数据
+	protected boolean isFirstClicked = true;//第一次点击鼠标
+	protected boolean isDoubleClicked = false;//双击标志
+	protected boolean isSingleClicked = false;//单击标志
+	// 绘图区
+	protected int width, height;//小程序的宽度和高度
+	protected Image image = null;//内存图像源的图像区域
+	protected MemoryImageSource mis = null;//内存映像源
+	protected int[] pixel = null;//内存图像源颜色排列
+	protected int pixelWidth;//内存图像源的宽度
+	protected int pixelHeight;//内存图像源的垂直宽度
+	protected int xoffset;//像素数据窗口内X坐标的偏移
+	protected int yoffset;//像素数据窗口中Y坐标的偏移
+	protected double leftTopx;//MyCanvas类的drawImage（）方法的起点
+	protected double leftTopy;//MyCanvas类的drawImage（）方法的起点
+	// 用于绘制多边形边的数据
+	protected double x0, y0;// 第一名
+	protected double lastx, lasty; // 前一个多边形的顶点
+	protected double movingx, movingy;//橡皮筋的顶点
+	protected int numPoints = 0; // 多边形的顶点数
+	protected boolean isPolygonMode = true;// 多边形绘图模式
+	protected Vector lines = new Vector(256,256);//向量类
 
-	public void init(){//アプレットの初期化
-		m = new MyCanvas(this);//MyCanvasオブジェクト生成
-		addMouseListener(this);//マウスリスナーを設定
-		addMouseMotionListener(this);//マウスのモーションリスナーを設定
-		Dimension d = getSize();//アプレットのサイズ取得
-		width = d.width;//アプレットの横幅
-		height = d.height;//アプレットの縦幅
+	public void init(){//小程序初始化
+		m = new MyCanvas(this);//MyCanvas对象生成
+		addMouseListener(this);//设置鼠标侦听器
+		addMouseMotionListener(this);//设置鼠标动作侦听器
+		Dimension d = getSize();//获取小程序大小
+		width = d.width;//小程序的宽度
+		height = d.height;//小程序高度
 	}
 
 	public void initData(){
-		isFirstClicked = true;//最初のマウスクリック用のフラグ
-		isPolygonMode = true;//多角形の周囲の描画モードのフラグ
-		numPoints = 0;//多角形の頂点数
-		bucket = new activeEdgeList[height+1];//バケット
+		isFirstClicked = true;//标记为第一次单击鼠标
+		isPolygonMode = true;//在多边形周围绘制模式标志
+		numPoints = 0;//多边形的顶点数
+		bucket = new activeEdgeList[height+1];//桶
 		for (int i=0; i < height+1 ; i++) bucket[i] = null;
 		if (lines.size() > 0) lines.removeAllElements();
 	}
 
-  public void paint(Graphics g) { // 描画メソッド
+  public void paint(Graphics g) { // 画图方法
+		g.clearRect(0, 0, getWidth(), getHeight());
     if (m != null) {
       if (isFirstClicked) {
         initData();
         Font f = m.MyFont(m.getFont().getName(), Font.BOLD + Font.ITALIC, 1.5);
         m.setFont(f);
-        m.drawString("クリックで開始", -0.5, 0.2);
-        m.drawString("ダブルクリックで塗りつぶし", -0.9, -0.15);
+        m.drawString("点击开始", -0.5, 0.2);
+        m.drawString("双击填写", -0.9, -0.15);
       }
       m.setBackground(new Color(220, 220, 220));
-      m.setColor(Color.black); // 前面色を黒色に設定
-      for (int i = 0; i < lines.size(); i++) { // 多角形の周囲
+      m.setColor(Color.black); //将前景色设置为黑色
+      for (int i = 0; i < lines.size(); i++) { // 围绕多边形
         Line l = (Line) lines.elementAt(i);
         m.drawLine(l.x1, l.y1, l.x2, l.y2);
       }
-      if (isPolygonMode && !isFirstClicked) { // ラバーバンド
+      if (isPolygonMode && !isFirstClicked) { // 橡皮筋
         m.drawLine(lastx, lasty, movingx, movingy);
       }
-      if ((!isPolygonMode) && (image != null)) { // 塗りつぶし
+      if ((!isPolygonMode) && (image != null)) { //填
         m.drawImage(image, leftTopx, leftTopy, this);
       }
     }
 	}
 
-	// アクティブエッジリストへ入力データを登録
+	// 将输入数据注册到活动边沿列表
 	public void registerActiveEdgeEntry(){
-		numEdge = lines.size();//多角形の辺の数
+		numEdge = lines.size();//多边形的边数
 		edgeData = new activeEdgeListEntry[numEdge];
 		for (int i=0 ; i < numEdge ; i++) edgeData[i] = new activeEdgeListEntry();
 		int LARGE = 0x0fffffff;
@@ -109,7 +110,7 @@ public class fillPolygon extends JApplet
 			int ix1 = m.getX(l.x1); int iy1 = height - m.getY(l.y1);
 			int ix2 = m.getX(l.x2); int iy2 = height - m.getY(l.y2);
 			edgeData[i].topx = 0; edgeData[i].name = i; edgeData[i].next = null;
-			if (iy1 > iy2) { 
+			if (iy1 > iy2) {
 				edgeData[i].isHorizontal = false;
 				edgeData[i].topy = iy1; edgeData[i].topx = ix1;
 				edgeData[i].x = ix1; edgeData[i].boty = iy2;
@@ -117,7 +118,7 @@ public class fillPolygon extends JApplet
 				if (iy2 < ymin) { ymin = iy2; dymin = l.y2;}
 				if (iy1 > ymax) { ymax = iy1; dymax = l.y1;}
 			}
-			else if (iy1 < iy2) { 
+			else if (iy1 < iy2) {
 				edgeData[i].isHorizontal = false;
 				edgeData[i].topy = iy2; edgeData[i].topx = ix2;
 				edgeData[i].x = ix2; edgeData[i].boty = iy1;
@@ -125,7 +126,7 @@ public class fillPolygon extends JApplet
 				if (iy1 < ymin) { ymin = iy1; dymin = l.y1;}
 				if (iy2 > ymax) { ymax = iy2; dymax = l.y2;}
 			}
-			else { 
+			else {
 				edgeData[i].isHorizontal = true;
 				if (iy1 < ymin) { ymin = iy1; dymin = l.y1;}
 				if (iy1 > ymax) { ymax = iy1; dymax = l.y1;}
@@ -144,7 +145,7 @@ public class fillPolygon extends JApplet
 				if (ix1 > xmax) { xmax = ix1; dxmax = l.x1;}
 			}
 		}
-		// メモリイメージソース用の整数配列の割り当て
+		// 为内存图像源分配整数数组
 		pixelWidth = xmax - xmin + 1; pixelHeight = ymax - ymin + 1;
 		pixel = new int[pixelWidth*pixelHeight];
 		for (int k=0 ; k < pixelWidth*pixelHeight ; k++ )
@@ -154,116 +155,116 @@ public class fillPolygon extends JApplet
 		leftTopy = dymax;//MyCanvas.drawImage用
 	}
 
-	// バケットの初期化（挿入ソートを含む）
+	//存储桶初始化（包括插入排序）
 	public void bucketSort(){
 		for (int i=0 ; i < lines.size() ; i++){
 			Line l = (Line)lines.elementAt(i);
-			if (edgeData[i].isHorizontal) continue;//水平線は処理しない
+			if (edgeData[i].isHorizontal) continue;//不处理水平线
 			int yt = edgeData[i].topy;
-			if (bucket[yt] == null) {//まだバケットに要素がない場合
+			if (bucket[yt] == null) {//如果存储桶中还没有元素
 				bucket[yt] = new activeEdgeList(edgeData[i]);
 				continue;
 			}
-			bucket[yt].insert(edgeData[i]);//挿入ソート
+			bucket[yt].insert(edgeData[i]);//插入排序
 		}
 	}
 
-	//多角形のスキャンコンバージョン
+	//多边形扫描转换
 	public void scanPolygon(){
 		activeHeader = null;
 		for (int y=height-1 ; y >= 0 ; y--){
 			if (bucket[y] != null){
 				makeActiveEdgeList(bucket[y],y); processActiveEdgeList(y);
 			}
-			else if (activeHeader != null && activeHeader.header != null){ 
+			else if (activeHeader != null && activeHeader.header != null){
 				processActiveEdgeList(y);
 			}
 		}
 	}
 
-	//アクティブエッジリストの処理
+	//主动边缘列表处理
 	public void processActiveEdgeList(int y){
 		int xleft, xright; double xl, xr;
 		activeEdgeListEntry left = activeHeader.header;
 		activeEdgeListEntry right = left.next;
 		if (right == null) return;
 		while (true){
-			xl = left.x; xr = right.x; 
+			xl = left.x; xr = right.x;
 			xleft = (int) xl; xright = (int) (xr+0.5);
-			if (xleft <= xright){ 
-				fillScanline(xleft,xright,y);} //スキャンラインを塗りつぶし
-			left.x += left.delta;//左の辺のX座標を増加させる
-			right.x += right.delta;//右の辺のX座標を増加させる
-			if (left.boty >= y-1 && right.boty >= y-1){//Yの最小値での塗りつぶし
+			if (xleft <= xright){
+				fillScanline(xleft,xright,y);} //填充扫描线
+			left.x += left.delta;//增加左侧的X坐标
+			right.x += right.delta;//增加右侧的X坐标
+			if (left.boty >= y-1 && right.boty >= y-1){//用最小Y填充
 				xleft = (int)left.x; xright = (int)(right.x+0.5);
 				if (xleft <= xright)
 					fillScanline(xleft,xright,y-1);
 			}
-			if (left.boty >= y-1){//左の辺をアクティブエッジリストから削除
+			if (left.boty >= y-1){//从活动边缘列表中删除左侧
 				activeHeader.remove(left);
 			}
-			if (right.boty >= y-1){//右の辺をアクティブエッジリストから削除
+			if (right.boty >= y-1){//从活动边缘列表中删除右边缘
 				activeHeader.remove(right);
 			}
-			left = right.next;//リストの次のペアを選択
-			if (left == null) break;//もう要素はない
+			left = right.next;//选择列表中的下一对
+			if (left == null) break;//没有更多元素
 			right = left.next;
 			if (right == null) throw new NullPointerException();
 		}
-		activeHeader.traverse();//線がクロスしている場合のリスト再構築
+		activeHeader.traverse();//线交叉时的列表重建
 	}
 
-	// アクティブエッジリストの作成
+	//创建活动边缘列表
 	public void makeActiveEdgeList(activeEdgeList list, int y){
 		if (activeHeader == null) 	activeHeader = list;
 		else    activeHeader = activeHeader.merge(list,y);
 	}
 
-	// タイルパターンの生成用
+	// 用于平铺图案生成
  	public boolean isTilePattern(int i, int j){
-		if (i % 8 == 0 || j % 8 == 0 || i % 8 == 1 
+		if (i % 8 == 0 || j % 8 == 0 || i % 8 == 1
 		 || j % 8 == 1 || i % 8 == 2 || j % 8 == 2 )
 			return true;//タイルのモルタル部分
 		return false;
 	}
 
-	// 画素値に適当な色をセット
+	// 为像素值设置适当的颜色
 	public void putPixel(int i, int j){
 		int r, g, b;
 		if (isTilePattern(i,j)) { r = g = b = 0; }
-		else { 
+		else {
 			r = (int)(Math.random()*255);
 			g = (int)(Math.random()*255);
 			b = (int)(Math.random()*255);
-		} 
+		}
 		int a = 0xff000000|(r<<16)|(g<<8)|b;//画素色値
 		pixel[(pixelHeight-1-(j-yoffset))*pixelWidth+(i-xoffset)] = a;
 	}
 
-	//スキャンラインのX方向での画素列の塗りつぶし
+	//在扫描线X方向上填充像素列
 	public void fillScanline(int xleft, int xright, int y){
 		for (int x = xleft ; x <= xright ; x++ ) putPixel(x,y);
 	}
 
-	// 多角形の塗りつぶし（メインメソッド）
+	// 填充多边形（主要方法）
 	public void scanLineFillPolygon(){
-		registerActiveEdgeEntry();//辺の登録
-		bucketSort();//バケットへの挿入ソート
-		scanPolygon();//辺コヒーレンスを利用した多角形の塗りつぶし
+		registerActiveEdgeEntry();//边缘套准
+		bucketSort();//将分类插入存储桶
+		scanPolygon();//使用边缘相干填充多边形
 		repaint();
 	}
 
-	//マウスのイベント取得
+	//获取鼠标事件
 	public void mousePressed(MouseEvent e){
-		int ix = e.getX();//マウスのX位置(Java座標系)
-		int iy = e.getY();//マウスのY位置(Java座標系)
+		int ix = e.getX();//鼠标的X位置（Java坐标系）
+		int iy = e.getY();//鼠标Y位置（Java坐标系）
 		if (isPolygonMode){
-			double x, y; // マウスの現在位置（ユーザ座標系）
-			if (e.getClickCount() >= 2){// ダブルクリック
+			double x, y; // 当前鼠标位置（用户坐标系）
+			if (e.getClickCount() >= 2){// 双击
 				isDoubleClicked = true;
 				lines.addElement(new Line(lastx,lasty,x0,y0));
 				isPolygonMode = false;
-				scanLineFillPolygon();//塗りつぶし処理の開始
+				scanLineFillPolygon();//开始填充过程
 				if (numEdge > 2){
 					mis = new MemoryImageSource(pixelWidth,
 						pixelHeight,pixel,0,
@@ -272,7 +273,7 @@ public class fillPolygon extends JApplet
 				}
 			}
 			else {
-				if (isFirstClicked) {//はじめてのクリック
+				if (isFirstClicked) {//第一次点击
 					isFirstClicked = false;
 					lastx = x0 = m.getUserX(ix,
 						m.getViewport(ix,iy));
@@ -280,7 +281,7 @@ public class fillPolygon extends JApplet
 						m.getViewport(ix,iy));
 					movingx = lastx; movingy = lasty;
 				}
-				else {//２回目以降のシングルクリック
+				else {//第二次及以后的单次点击
 					x = m.getUserX(ix, m.getViewport(ix,iy));
 					y = m.getUserY(iy, m.getViewport(ix,iy));
 					lines.addElement(new Line(lastx,lasty,x,y));
@@ -292,30 +293,30 @@ public class fillPolygon extends JApplet
 		}
 	}
 
-	// ラバーバンド用にマウスの現在位置をゲット
+	// 获取橡皮筋的鼠标当前位置
 	public void mouseMoved(MouseEvent e){
 		if (!isFirstClicked && isPolygonMode){
 			int ix,iy;
-			ix = e.getX();//マウスのX位置(Java座標系)
-			iy = e.getY();//マウスのY位置(Java座標系)
+			ix = e.getX();//鼠标的X位置（Java坐标系）
+			iy = e.getY();//鼠标Y位置（Java坐标系）
 			movingx = m.getUserX(ix, m.getViewport(ix,iy));
 			movingy = m.getUserY(iy, m.getViewport(ix,iy));
 			repaint();
 		}
 	}
 
-	// ダミーメソッド
+	// 空方法
 	public void mouseClicked(MouseEvent e){}
 	public void mouseEntered(MouseEvent e){}
 	public void mouseExited(MouseEvent e){}
 	public void mouseReleased(MouseEvent e){}
 	public void mouseDragged(MouseEvent e){}
 
-	// ベクトル（Javaの不定数要素配列型）で定義する線分データ
+	// 向量定义的线段数据（Java非常数元素数组类型）
 	static class Line {
 		public double x1, y1;
 		public double x2, y2;
-		//コンストラクタ
+		//构造函数
 		public Line(double x1, double y1, double x2, double y2){
 			this.x1 = x1; this.y1 = y1;
 			this.x2 = x2; this.y2 = y2;

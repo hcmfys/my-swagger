@@ -1,141 +1,150 @@
 package org.springbus.comutergraphics.CG.C2_4.fillPolygon;
-// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
+
 
 // activeEdgeList.java
-// アクティブエッジリストおよび関連メソッド
-//	プログラム２−１１
+//活动边缘列表和相关方法
+//程序2-11
 
 public class activeEdgeList {
 
-	activeEdgeListEntry header = null;//先頭要素
-	activeEdgeListEntry tailer = null;//末尾要素
+	activeEdgeListEntry header = null;//第一要素
+	activeEdgeListEntry tailer = null;//最后一个元素
 
-	// コンストラクタ
-	public activeEdgeList(activeEdgeListEntry element){
+	// 构造函数
+	public activeEdgeList(activeEdgeListEntry element) {
 		header = tailer = element;
 	}
 
-	// 挿入ソート
-	public void insert(activeEdgeListEntry element){
-		activeEdgeListEntry sentinel;//見張り番
-		if (element == null || this.header == null) 
+	// 插入排序
+	public void insert(activeEdgeListEntry element) {
+		activeEdgeListEntry sentinel;//哨兵
+		if (element == null || this.header == null)
 			throw new NullPointerException();
 		sentinel = this.header;
-		int xt = element.topx; int xtold = sentinel.topx;
-		double oldDelta = sentinel.delta; double newDelta = element.delta;
-		if ((xtold < xt) || ((xtold == xt) && (oldDelta < newDelta))){
-			// 新しいデータの方がバケットのデータよりリスト
+		int xt = element.topx;
+		int xtold = sentinel.topx;
+		double oldDelta = sentinel.delta;
+		double newDelta = element.delta;
+		if ((xtold < xt) || ((xtold == xt) && (oldDelta < newDelta))) {
+			//列出比存储桶数据更新的数据
 			// の後ろ側にくる場合
 			while (true) {
-				if (sentinel.next == null){//末尾に追加して終了
+				if (sentinel.next == null) {//添加到末尾
 					sentinel.next = element;
-					this.tailer = element; break;
+					this.tailer = element;
+					break;
 				}
 				activeEdgeListEntry mp = sentinel.next;
 				int xmt = mp.topx;
 				double midDelta = mp.delta;
-				if ((xmt<xt) ||((xmt == xt)&&(midDelta < newDelta)))								sentinel = mp;//新しい要素はまだ未定
-				else { // 間に挿入して終了
+				if ((xmt < xt) || ((xmt == xt) && (midDelta < newDelta))) sentinel = mp;//新元素有待确定
+				else { // 插入之间和结束
 					sentinel.next = element;
 					element.next = mp;
-					break;//tailerは不変
+					break;//尾部保持不变
 				}
 			}
-		}
-		else {//バケットの最初に挿入
+		} else {//插入存储桶的开头
 			sentinel = this.header;
-			this.header = element; element.next = sentinel;
+			this.header = element;
+			element.next = sentinel;
 		}
 	}
 
-	// 末尾に要素を追加
-	public void append(activeEdgeListEntry element){
+	// 在结尾添加元素
+	public void append(activeEdgeListEntry element) {
 		if (element == null) throw new NullPointerException();
-		if (tailer == null){ 
-			tailer = element; header = element;}//はじめての要素だった場合
-		else { tailer.next = element; tailer = element;} //末尾に追加
+		if (tailer == null) {
+			tailer = element;
+			header = element;
+		}//はじめての要素だった場合
+		else {
+			tailer.next = element;
+			tailer = element;
+		} //末尾に追加
 	}
 
-	// 2つのエッジリストをマージソート
-	public activeEdgeList merge(activeEdgeList list, int y){
+	// 合并排序两个边缘列表
+	public activeEdgeList merge(activeEdgeList list, int y) {
 		if (list == null) return this;
-		activeEdgeListEntry a = this.header;//現在のactiveHeader
+		activeEdgeListEntry a = this.header;//当前的activeHeader
 		activeEdgeListEntry b = list.header;//バケットリスト
-		activeEdgeListEntry save = null; // マージするためのポインタ
-		activeEdgeList result = null;//返り値をおく変数
-		activeEdgeListEntry anext, bnext;//テンポラリに使用
-		while (true){
-			if (a == null && b == null) return(result);
-			else if (a == null){
+		activeEdgeListEntry save = null; // 合并指针
+		activeEdgeList result = null;//用于存储返回值的变量
+		activeEdgeListEntry anext, bnext;//用于临时
+		while (true) {
+			if (a == null && b == null) return (result);
+			else if (a == null) {
 				if (save != null) {
-					save.next = b; result.tailer = list.tailer;
+					save.next = b;
+					result.tailer = list.tailer;
 				}
-				return(result);
+				return (result);
+			} else if (b == null) {
+				if (save != null) {
+					save.next = a;
+					result.tailer = this.tailer;
+				}
+				return (result);
 			}
-			else if (b == null){
-				if (save != null){ 
-					save.next = a; result.tailer = this.tailer; }
-				return(result);
-			}
-			int xa = (int)(a.topx + (a.topy - y) * a.delta);
-			int xb = b.topx;//バケット側のX値
-			if (xa <= xb) {//aの方をresultリストに追加
-				anext = a.next; a.next = null;
+			int xa = (int) (a.topx + (a.topy - y) * a.delta);
+			int xb = b.topx;//铲斗侧的X值
+			if (xa <= xb) {//将一个添加到结果列表
+				anext = a.next;
+				a.next = null;
 				if (result == null) {
 					result = new activeEdgeList(a);
 					save = result.tailer;
-				}
-				else result.append(a); 
+				} else result.append(a);
 				save = a;
 				a = anext;
-			}
-			else {
-				bnext = b.next; b.next = null;
-				if (result == null){
+			} else {
+				bnext = b.next;
+				b.next = null;
+				if (result == null) {
 					result = new activeEdgeList(b);
 					save = result.tailer;
-				}
-				else result.append(b); 
+				} else result.append(b);
 				save = b;
 				b = bnext;
 			}
 		}
 	}
 
-	// アクティブエッジリストの要素を削除
-	public void remove(activeEdgeListEntry element){
+	// 删除活动边缘列表元素
+	public void remove(activeEdgeListEntry element) {
 		activeEdgeListEntry p, q;
-		if (header == element){//削除の要素はリストの最初の要素
+		if (header == element) {//删除元素是列表中的第一个元素
 			header = element.next;
 			if (tailer == element) tailer = header;
 			return;
 		}
 		p = q = header;
-		while (p != element){
-			q = p; p = p.next;
-			if (p == null) throw new NullPointerException(); //見つからなかった
+		while (p != element) {
+			q = p;
+			p = p.next;
+			if (p == null) throw new NullPointerException(); //找不到
 		}
-		if (element == tailer) tailer = q; //削除の要素は末尾の要素
-		q.next = p.next;// ここで本当に削除
+		if (element == tailer) tailer = q; //删除的元素是最后一个元素
+		q.next = p.next;// 真的在这里删除
 	}
 
-	//アクティブエッジリストを走査し，必要に応じ要素をスワップ
-	public void traverse(){
-		activeEdgeListEntry p, q, r, tmp; p = r = header;
-		while (p != null){
-			q = p.next;	if (q == null) break;
-			if (q.x < p.x){//スワップ
-				tmp = q.next; if (p == header) header = q;
-				else r.next = q; q.next = p; p.next = tmp;
+	//扫描活动边缘列表并根据需要交换元素
+	public void traverse() {
+		activeEdgeListEntry p, q, r, tmp;
+		p = r = header;
+		while (p != null) {
+			q = p.next;
+			if (q == null) break;
+			if (q.x < p.x) {//交换
+				tmp = q.next;
+				if (p == header) header = q;
+				else r.next = q;
+				q.next = p;
+				p.next = tmp;
 			}
-			r = p; p = p.next;
+			r = p;
+			p = p.next;
 		}
 		tailer = r;
 	}
