@@ -57,7 +57,7 @@ public class activeEdgeList {
 		if (tailer == null) {
 			tailer = element;
 			header = element;
-		}//はじめての要素だった場合
+		}//如果这是第一个要素
 		else {
 			tailer.next = element;
 			tailer = element;

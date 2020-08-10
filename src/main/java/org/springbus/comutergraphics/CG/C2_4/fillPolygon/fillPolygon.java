@@ -224,7 +224,7 @@ public class fillPolygon extends JApplet
  	public boolean isTilePattern(int i, int j){
 		if (i % 8 == 0 || j % 8 == 0 || i % 8 == 1
 		 || j % 8 == 1 || i % 8 == 2 || j % 8 == 2 )
-			return true;//タイルのモルタル部分
+			return true;//瓷砖的砂浆部分
 		return false;
 	}
 
