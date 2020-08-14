@@ -1,18 +1,11 @@
 package org.springbus.comutergraphics.CG.C4_1.ringPanic;
-// 本ファイルの著作権は、株式会社オーム社および本書の著作者である青野雅樹
-// および日本アイビーエム（株）に帰属します。
-// 本ファイルを利用したことによる直接あるいは間接的な損害に関して、
-// 著作者およびオーム社はいっさいの責任を負いかねますので、
-// あらかじめご了承ください
-// また，本ファイルを他のウェブサイトで公開すること，およびCD-ROMなどの
-// ディジタルメディアで再配布すること，ならびに販売目的で使用することは
-// お断りします。
 
 // ringPanic.java
-// 不規則に弾むリングと板の衝突検出するアニメーション
-// 板の位置はマウスでクリックしドラッグすることで変更可能
-//	プログラム４−３
+//不规则弹跳环和平板之间的碰撞检测动画
+//可以通过单击并拖动鼠标来更改板的位置
+//程序4-3
 
+import org.springbus.comutergraphics.CG.common.JApplet;
 import org.springbus.comutergraphics.CG.common.MyCanvas;
 
 import java.awt.*;//AWTパッケージ
@@ -21,7 +14,7 @@ import java.awt.event.*;//マウスイベント利用のため
 import java.applet.*;//Appletクラス利用のため
 import java.net.*;//URLクラス利用のため
 
-public class ringPanic extends Applet implements Runnable, 
+public class ringPanic extends JApplet implements Runnable,
 	MouseListener, MouseMotionListener {
 
 	final static double EPSILON = 1.0E-10;//十分小さい数
@@ -112,6 +105,8 @@ public class ringPanic extends Applet implements Runnable,
 		catch(InterruptedException e){}
 	}
 
+
+
 	public void createBackground(){//背景をオフスクリーン右バッファに書く
 		m.setGraphics(MyCanvas.OFFSCREEN_GRAPHICS);
 		m.drawImage(brickImage,1.0,1.0,dwidth,dheight,this);
@@ -179,7 +174,7 @@ public class ringPanic extends Applet implements Runnable,
 			ring[i].move();
 			int c = isHit(i);
 			if (c < 0) { ring[i].hit = false; continue;}
-			// リングと板が衝突 
+			// リングと板が衝突
 			if (ring[i].hit) continue;
 			ring[i].hit = true;
  			if (c == 1){//板の上面と衝突
@@ -480,15 +475,15 @@ public class ringPanic extends Applet implements Runnable,
 					else    pixel = 0x00000000;
 					rgb[width*y+x] = pixel;
 			}
-			MemoryImageSource mis = new 
+			MemoryImageSource mis = new
 				MemoryImageSource(width,height,rgb,0,width);
 			return component.createImage(mis);
 		}
 		public void changeRingSpeed(boolean flag){
 			//リングのスピードを変える
-			ringSpeedX = 
+			ringSpeedX =
 				RING_INIT_SPEED * (1 + (int)(5*Math.random()));
-			ringSpeedY = 
+			ringSpeedY =
 				RING_INIT_SPEED * (1 + (int)(5*Math.random()));
 			if (flag) return;
 			dx = 2*Math.random()-1.0;
@@ -502,20 +497,20 @@ public class ringPanic extends Applet implements Runnable,
 			x0 = lastx; y0 = lasty;
 			x = lastx + ringSpeedX * dx;
 			y = lasty + ringSpeedY * dy;
-			if (x < -1) { 
+			if (x < -1) {
 				x = -1; dx = -dx;
-				changeRingSpeed(false); 
+				changeRingSpeed(false);
 			}
-			else if (x > 1-w) { 
+			else if (x > 1-w) {
 				x = 1-w; dx = -dx;
-				changeRingSpeed(false); 
+				changeRingSpeed(false);
 			}
-			if (y < -(1-h)) { 
+			if (y < -(1-h)) {
 				y = -(1-h); dy = -dy;
 				changeRingSpeed(false);
 			}
-			else if (y > 1.0) { 
-				y = 1.0; dy = -dy; 
+			else if (y > 1.0) {
+				y = 1.0; dy = -dy;
 				changeRingSpeed(false);
 			}
 			lefttopx = Math.min(x, lastx);
@@ -544,7 +539,7 @@ public class ringPanic extends Applet implements Runnable,
 		public double lastmx, lastmy;//マウスの最新位置
 		public Image image;//板の画像
 		public Component component;//板の描画コンポーネント
-		public Plate(Component comp, double w, double h, 
+		public Plate(Component comp, double w, double h,
 			int width, int height){
 			this.component = comp;
 			this.w = w;
@@ -571,7 +566,7 @@ public class ringPanic extends Applet implements Runnable,
 			int[] rgb = new int[width*height];
 			for (int y = 0 ; y < height ; y++ ){
 				for (int x = 0 ; x < width ; x++ ){
-					if ((x < 2) || (x > (width-3))) { 
+					if ((x < 2) || (x > (width-3))) {
 						R = 255; G = B = 0;
 					}
 					else if ((y < 2)||( y > (height-3))){
@@ -586,7 +581,7 @@ public class ringPanic extends Applet implements Runnable,
 					rgb[width*y+x] = pixel;
 				}
 			}
-			MemoryImageSource mis = new 
+			MemoryImageSource mis = new
 				MemoryImageSource(width,height,rgb,0,width);
 			return component.createImage(mis);
 		}
@@ -609,5 +604,10 @@ public class ringPanic extends Applet implements Runnable,
 			if (lasty < -(1-h)) {	lasty = -(1-h);}
 			else if (lasty > 1.0) { lasty = 1.0;}
 		}
+	}
+
+	public static void main(String[] args) {
+		ringPanic r=new ringPanic();
+		r.display();
 	}
 }

@@ -2,6 +2,7 @@ package org.springbus.comutergraphics.CG.common;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -60,6 +61,11 @@ public abstract class JApplet extends JFrame {
   public String getParameter(String name) {
     return null;
   }
+
+  public AudioClip getAudioClip(URL url) {
+    return null;
+  }
+
 
   public void setPixel(Graphics g, int x, int y, Color c) {
     Color oldColor = g.getColor();
