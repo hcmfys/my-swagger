@@ -9,7 +9,10 @@ package org.springbus.adt;
 //所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）。
 //在这个分区退出之后，该基准就处于数列的中间位置。这个称为分区（partition）操作；
 //递归地（recursive）把小于基准值元素的子数列和大于基准值元素的子数列排序。
-public class QuickSort {
+//通过使用插入排序来处理小规模子序列(如长度小于15)一般可以提升归并排序的效率10%~15%
+//时间复杂度， 最好：O(nlogn)、最坏：O(n^2)、平均：O(nlogn)。
+
+public class QuickSort  extends  Sorter {
 
 
     public  static  void main(String[] args) {
@@ -62,24 +65,5 @@ public class QuickSort {
         return  j;
     }
 
-    /**
-     *
-     * @param i
-     * @param j
-     * @return
-     */
-    private  static  boolean  less( int i,int j) {
-        return i<j;
-    }
-    /**
-     * 交换次序
-     * @param a
-     * @param i
-     * @param j
-     */
-    private  static  void   exch(int a[],int i,int j){
-        int t=a[i];
-        a[i]=a[j];
-        a[j]=t;
-    }
+
 }
