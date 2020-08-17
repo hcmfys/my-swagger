@@ -10,7 +10,7 @@ import java.util.Collections;
  * 具体操作： 设置一个定量的数组当作空桶；遍历输入数据，并且把数据一个一个放到对应的桶里去；
  * 对每个不是空的桶进行排序；从不是空的桶里把排好序的数据拼接起来。
  */
-public class BuddleSort {
+public class BucketSort {
 
     public  static  void main(String[] args) {
          int [] arr={ 8,7,10,12,1,2,6,6};
