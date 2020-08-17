@@ -31,4 +31,16 @@ public class Sorter {
         a[i]=a[j];
         a[j]=t;
     }
+
+    /**
+     *
+     * @param a
+     * @param i
+     * @param j
+     */
+    protected  static  void   exch(Comparable[] a,int i,int j){
+        Comparable t=a[i];
+        a[i]=a[j];
+        a[j]=t;
+    }
 }
