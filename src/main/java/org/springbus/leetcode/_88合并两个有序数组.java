@@ -22,13 +22,13 @@ public class _88合并两个有序数组 {
     public  static  void main(String[] args){
         int a[]={1,2,3,0,0,0};
         int b[]={2,5,6};
-        meagre(a,3,b, 3);
+        merge(a,3,b, 3);
         for(int i=0;i<a.length;i++){
             System.out.print(a[i] +" ");
         }
     }
 
-    public static  void meagre(int[] number1,int m,int[] number2,int n){
+    public static  void merge(int[] number1, int m, int[] number2, int n){
         int size=m+n;
         int l=m-1;
         int j=n-1;
