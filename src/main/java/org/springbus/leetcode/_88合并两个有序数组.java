@@ -17,6 +17,17 @@ package org.springbus.leetcode;
 
 public class _88合并两个有序数组 {
 
+    static void reverseSentence(String s,int i) {
+        if (i >= 0) {
+            char c = s.charAt(i);
+            System.out.print(c);
+            reverseSentence(s, --i);
+        }
+    }
+
+    static  void reversePrint( String s ) {
+        reverseSentence(s, s.length() - 1);
+    }
 
 
     public  static  void main(String[] args){
@@ -26,6 +37,7 @@ public class _88合并两个有序数组 {
         for(int i=0;i<a.length;i++){
             System.out.print(a[i] +" ");
         }
+        reversePrint("hello world");
     }
 
     public static  void merge(int[] number1, int m, int[] number2, int n){
