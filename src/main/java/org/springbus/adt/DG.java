@@ -2,6 +2,7 @@ package org.springbus.adt;
 
 
 import com.google.common.collect.Lists;
+import edu.princeton.cs.algs4.In;
 import org.jooq.meta.derby.sys.Sys;
 
 import java.awt.peer.LabelPeer;
@@ -123,6 +124,67 @@ public class DG {
     }
 
 
+    void  dp_perm(List<Integer> calList, int index, LinkedList<Integer> numList) {
+        if (numList.size() == calList.size()) {
+            System.out.println(numList);
+            return;
+        }
+
+
+        List<Integer> selectedList = new ArrayList<>();
+        selectedList.addAll(calList);
+
+        for (int i = 0; i < numList.size(); i++) {
+            if (calList.contains(numList.get(i))) {
+                selectedList.remove(numList.get(i));
+            }
+        }
+
+
+        for (int i = 0; i < selectedList.size(); i++) {
+            int c = selectedList.get(i);
+            numList.add(c);
+            dp_perm(calList, index + 1, numList);
+            numList.removeLast();
+        }
+    }
+
+    Map<String,Integer> dataMap=new HashMap<>();
+    void  dp_perm_mutil(List<Integer> calList, int index, LinkedList<Integer> numList) {
+        if (numList.size() == calList.size()) {
+
+            StringBuffer sb=new StringBuffer();
+            for(int i=0;i<numList.size();i++) {
+                sb.append(numList.get(i)+"_");
+            }
+            String k=sb.toString();
+            if(dataMap.get(k)==null) {
+                dataMap.put(k,0);
+                System.out.println(numList);
+            }
+            return;
+        }
+
+
+        List<Integer> selectedList = new ArrayList<>();
+        selectedList.addAll(calList);
+
+        for (int i = 0; i < numList.size(); i++) {
+            if (calList.contains(numList.get(i))) {
+                selectedList.remove(numList.get(i));
+            }
+        }
+
+
+        for (int i = 0; i < selectedList.size(); i++) {
+            int c = selectedList.get(i);
+            numList.add(c);
+            dp_perm_mutil(calList, index + 1, numList);
+            numList.removeLast();
+        }
+    }
+
+
 
 
     public static void main(String[] args) {
@@ -131,6 +193,8 @@ public class DG {
         //System.out.println(new DG().fib_dp(100));
         //System.out.println(new DG().fib_final(100));
         //System.out.println(new DG().dp_coin(Lists.newArrayList(1,2,5),24));
-        new DG().dp_cal(Lists.newArrayList(1, 1, 1, 1, 1), 0, 3, new LinkedList<>());
+        // new DG().dp_cal(Lists.newArrayList(1, 1, 1, 1, 1), 0, 3, new LinkedList<>());
+
+        new DG().dp_perm_mutil(Lists.newArrayList(1, 2, 1), 0,  new LinkedList<>());
     }
 }
