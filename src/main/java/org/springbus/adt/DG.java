@@ -184,6 +184,52 @@ public class DG {
         }
     }
 
+    /**
+     *
+     * @param numList
+     */
+    public void  twoSum(List<Integer> numList,int sum) {
+        Collections.sort(numList);
+        int lo=0;
+        int hi=numList.size()-1;
+
+        while(lo<hi){
+            int target=numList.get(lo) + numList.get(hi);
+            if(target>sum){
+                hi--;
+            }else if(target<sum){
+                lo++;
+            }else{
+                System.out.println("lo="+numList.get(lo) +" hi="+numList.get(hi));
+                hi--;
+                lo++;
+            }
+        }
+    }
+
+    int binarySearch(List<Integer> numList,int target) {
+        Collections.sort(numList);
+        int left = 0;
+        int right = numList.size() - 1;
+
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            int v = numList.get(mid);
+            if (target == v) {
+                System.out.println("index=" + mid + "  v=" + numList.get(mid));
+                return mid;
+            }else if (target > v) {
+                left = mid + 1;
+            } else if (target < v) {
+                right = mid--;
+            }
+        }
+        return -1;
+    }
+
+
+
+
 
 
 
@@ -193,8 +239,9 @@ public class DG {
         //System.out.println(new DG().fib_dp(100));
         //System.out.println(new DG().fib_final(100));
         //System.out.println(new DG().dp_coin(Lists.newArrayList(1,2,5),24));
-        // new DG().dp_cal(Lists.newArrayList(1, 1, 1, 1, 1), 0, 3, new LinkedList<>());
+        //new DG().dp_cal(Lists.newArrayList(1, 1, 1, 1, 1), 0, 3, new LinkedList<>());
 
-        new DG().dp_perm_mutil(Lists.newArrayList(1, 2, 1), 0,  new LinkedList<>());
+        //new DG().dp_perm_mutil(Lists.newArrayList(1, 2, 1), 0,  new LinkedList<>());
+        new DG().binarySearch(Lists.newArrayList(1,4,4,4,4,6,15,34,45,334,333), 4);
     }
 }
