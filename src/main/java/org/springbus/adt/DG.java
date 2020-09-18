@@ -13,26 +13,26 @@ import java.util.stream.Collectors;
 public class DG {
 
 
-      public void care(){
+    public void care() {
         //doCare(5);
-          doCareLetter("([{",new ArrayList<String>());
-      }
+        doCareLetter("([{", new ArrayList<String>());
+    }
 
-      public void  doCare(int a){
-          if(a==0) {
-              return;
-          }
-          doCare(a-1);
-          System.out.print(a +" ");
-      }
+    public void doCare(int a) {
+        if (a == 0) {
+            return;
+        }
+        doCare(a - 1);
+        System.out.print(a + " ");
+    }
 
-    public void  doCareLetter(String a, List<String> lst) {
+    public void doCareLetter(String a, List<String> lst) {
         if (lst.size() == a.length()) {
             System.out.println(lst.stream().collect(Collectors.joining("")));
             return;
         }
         for (int j = 0; j < a.length(); j++) {
-            String s = String.valueOf(a.charAt(j) );
+            String s = String.valueOf(a.charAt(j));
             if (lst.contains(s)) {
                 continue;
             }
@@ -42,7 +42,8 @@ public class DG {
         }
     }
 
-    Map<Integer,Long > met=new HashMap();
+    Map<Integer, Long> met = new HashMap();
+
     long fib(int a) {
 
 
@@ -59,64 +60,64 @@ public class DG {
     }
 
 
-    long fib_dp(int n){
-        long[] dp=new long[n+1];
-        dp[1]=dp[2]=1;
-        dp[0]=0;
-        for( int i=3;i<=n;i++) {
-            dp[i]=dp[i-1] +dp[i-2];
+    long fib_dp(int n) {
+        long[] dp = new long[n + 1];
+        dp[1] = dp[2] = 1;
+        dp[0] = 0;
+        for (int i = 3; i <= n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
         }
         return dp[n];
     }
 
-    long fib_final(int n){
-        if(n<=2) {
-            return  1;
+    long fib_final(int n) {
+        if (n <= 2) {
+            return 1;
         }
-        long sum=0;
-        long prev=1;
-        long next=1;
-        for(int i=3;i<=n;i++) {
-            sum=prev+next;
-            prev=next;
-            next=sum;
+        long sum = 0;
+        long prev = 1;
+        long next = 1;
+        for (int i = 3; i <= n; i++) {
+            sum = prev + next;
+            prev = next;
+            next = sum;
         }
-        return  sum;
+        return sum;
     }
 
 
-    int dp_coin(List<Integer> coins,int amount) {
-        int res=amount+1;
-        if  (amount  == 0 )  return 0;
-        if  (amount< 0) return -1;
+    int dp_coin(List<Integer> coins, int amount) {
+        int res = amount + 1;
+        if (amount == 0) return 0;
+        if (amount < 0) return -1;
 
-        System.out.print (" amount  "+ amount );
-        for( Integer coin : coins){
-            System.out.println  ("  coin   "+ coin );
-            res=Math.min(res,  1+dp_coin(coins,  amount- coin));
+        System.out.print(" amount  " + amount);
+        for (Integer coin : coins) {
+            System.out.println("  coin   " + coin);
+            res = Math.min(res, 1 + dp_coin(coins, amount - coin));
         }
-        return  res;
+        return res;
 
     }
 
-    void dp_cal(List<Integer> calList, int index, int amount, LinkedList<Integer> numList){
+    void dp_cal(List<Integer> calList, int index, int amount, LinkedList<Integer> numList) {
 
-        if(numList.size()==calList.size()) {
-            int res=0;
-            for(Integer c: numList) {
-                res+=c;
+        if (numList.size() == calList.size()) {
+            int res = 0;
+            for (Integer c : numList) {
+                res += c;
             }
-            if(res == amount) {
+            if (res == amount) {
                 System.out.println(numList);
             }
-            return ;
+            return;
         }
 
-        int d=calList.get(index);
-        int dl[]={d,-d};
-        for( int i=0;i<dl.length;i++) {
+        int d = calList.get(index);
+        int dl[] = {d, -d};
+        for (int i = 0; i < dl.length; i++) {
             int c = dl[i];
-            numList.add( c);
+            numList.add(c);
             dp_cal(calList, index + 1, amount, numList);
             numList.removeLast();
         }
@@ -124,7 +125,7 @@ public class DG {
     }
 
 
-    void  dp_perm(List<Integer> calList, int index, LinkedList<Integer> numList) {
+    void dp_perm(List<Integer> calList, int index, LinkedList<Integer> numList) {
         if (numList.size() == calList.size()) {
             System.out.println(numList);
             return;
@@ -149,17 +150,18 @@ public class DG {
         }
     }
 
-    Map<String,Integer> dataMap=new HashMap<>();
-    void  dp_perm_mutil(List<Integer> calList, int index, LinkedList<Integer> numList) {
+    Map<String, Integer> dataMap = new HashMap<>();
+
+    void dp_perm_mutil(List<Integer> calList, int index, LinkedList<Integer> numList) {
         if (numList.size() == calList.size()) {
 
-            StringBuffer sb=new StringBuffer();
-            for(int i=0;i<numList.size();i++) {
-                sb.append(numList.get(i)+"_");
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < numList.size(); i++) {
+                sb.append(numList.get(i) + "_");
             }
-            String k=sb.toString();
-            if(dataMap.get(k)==null) {
-                dataMap.put(k,0);
+            String k = sb.toString();
+            if (dataMap.get(k) == null) {
+                dataMap.put(k, 0);
                 System.out.println(numList);
             }
             return;
@@ -185,29 +187,28 @@ public class DG {
     }
 
     /**
-     *
      * @param numList
      */
-    public void  twoSum(List<Integer> numList,int sum) {
+    public void twoSum(List<Integer> numList, int sum) {
         Collections.sort(numList);
-        int lo=0;
-        int hi=numList.size()-1;
+        int lo = 0;
+        int hi = numList.size() - 1;
 
-        while(lo<hi){
-            int target=numList.get(lo) + numList.get(hi);
-            if(target>sum){
+        while (lo < hi) {
+            int target = numList.get(lo) + numList.get(hi);
+            if (target > sum) {
                 hi--;
-            }else if(target<sum){
+            } else if (target < sum) {
                 lo++;
-            }else{
-                System.out.println("lo="+numList.get(lo) +" hi="+numList.get(hi));
+            } else {
+                System.out.println("lo=" + numList.get(lo) + " hi=" + numList.get(hi));
                 hi--;
                 lo++;
             }
         }
     }
 
-    int binarySearch(List<Integer> numList,int target) {
+    int binarySearch(List<Integer> numList, int target) {
         Collections.sort(numList);
         int left = 0;
         int right = numList.size() - 1;
@@ -218,7 +219,7 @@ public class DG {
             if (target == v) {
                 System.out.println("index=" + mid + "  v=" + numList.get(mid));
                 return mid;
-            }else if (target > v) {
+            } else if (target > v) {
                 left = mid + 1;
             } else if (target < v) {
                 right = mid--;
@@ -227,10 +228,23 @@ public class DG {
         return -1;
     }
 
+    int longestCommonSubsequence(String s1, String s2) {
 
+        return dp_longestCommonSubsequence(s1, s1.length() - 1, s2, s2.length() - 1);
+    }
 
-
-
+    int dp_longestCommonSubsequence(String s1, int i, String s2, int j) {
+        if (i == -1 || j == -1) {
+            return 0;
+        }
+        if (s1.charAt(i) == s2.charAt(j)) {
+            return dp_longestCommonSubsequence(s1, i - 1, s2, j - 1) + 1;
+        } else {
+            int a=dp_longestCommonSubsequence(s1, i - 1, s2, j);
+            int b= dp_longestCommonSubsequence(s1, i, s2, j - 1);
+            return Math.max(a,b);
+        }
+    }
 
 
     public static void main(String[] args) {
@@ -242,6 +256,10 @@ public class DG {
         //new DG().dp_cal(Lists.newArrayList(1, 1, 1, 1, 1), 0, 3, new LinkedList<>());
 
         //new DG().dp_perm_mutil(Lists.newArrayList(1, 2, 1), 0,  new LinkedList<>());
-        new DG().binarySearch(Lists.newArrayList(1,4,4,4,4,6,15,34,45,334,333), 4);
+        // new DG().binarySearch(Lists.newArrayList(1,4,4,4,4,6,15,34,45,334,333), 4);
+        System.out.println(
+                new DG().longestCommonSubsequence("abcdsed", "dcsejgr")
+
+        );
     }
 }
